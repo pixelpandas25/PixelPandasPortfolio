@@ -4,6 +4,13 @@ interface LogoItem {
   name: string;
   image?: string;
   icon?: string;
+  /**
+   * Figma renders this logo as a solid-color mask rather than the literal source
+   * image — the raw asset is a low-contrast/near-white export that washes out
+   * under the usual luminosity blend, so Figma fills the shape with a flat gray
+   * (#626262) using the image purely as an alpha mask. Set to reproduce that.
+   */
+  maskColor?: string;
 }
 import logoGrowthplus from '@/assets/images/logo-rowA-growthplus.webp';
 import logoRowA2 from '@/assets/images/logo-rowA-2.webp';
@@ -18,13 +25,15 @@ import logoRowB4 from '@/assets/images/logo-rowB-4.webp';
 import logoThaatbaat from '@/assets/images/logo-rowB-thaatbaat.webp';
 import logoAicaIcon from '@/assets/icons/logo-aica-icon.svg';
 
+const MASK_GRAY = '#626262';
+
 const rowA: LogoItem[] = [
   { name: 'GrowthPlus', image: logoGrowthplus },
-  { name: 'Client logo', image: logoRowA2 },
+  { name: 'takeUforward', image: logoRowA2, maskColor: MASK_GRAY },
   { name: 'TLE Eliminator', image: logoTle },
   { name: 'Client logo', image: logoRowA4 },
   { name: 'Client logo', image: logoRowA5 },
-  { name: 'Client logo', image: logoRowA6 },
+  { name: 'Zenith', image: logoRowA6, maskColor: MASK_GRAY },
 ];
 
 const rowB: LogoItem[] = [
@@ -36,7 +45,7 @@ const rowB: LogoItem[] = [
   { name: 'Thaat Baat', image: logoThaatbaat },
 ];
 
-function LogoBox({ name, image, icon }: { name: string; image?: string; icon?: string }) {
+function LogoBox({ name, image, icon, maskColor }: { name: string; image?: string; icon?: string; maskColor?: string }) {
   return (
     <div className="flex h-[104px] w-[220px] shrink-0 items-center justify-center rounded bg-[#efefef]">
       {icon ? (
@@ -44,6 +53,24 @@ function LogoBox({ name, image, icon }: { name: string; image?: string; icon?: s
           <img src={icon} alt="" aria-hidden className="h-8 w-auto" style={{ mixBlendMode: 'luminosity' }} />
           <span className="font-display text-2xl font-bold text-[#626262]">{name}</span>
         </div>
+      ) : maskColor ? (
+        <div
+          role="img"
+          aria-label={name}
+          className="h-16"
+          style={{
+            backgroundColor: maskColor,
+            width: '70%',
+            WebkitMaskImage: `url(${image})`,
+            maskImage: `url(${image})`,
+            WebkitMaskRepeat: 'no-repeat',
+            maskRepeat: 'no-repeat',
+            WebkitMaskPosition: 'center',
+            maskPosition: 'center',
+            WebkitMaskSize: 'contain',
+            maskSize: 'contain',
+          }}
+        />
       ) : (
         <img
           src={image}
@@ -74,7 +101,13 @@ function MarqueeRow({
         )}
       >
         {doubled.map((item, i) => (
-          <LogoBox key={`${item.name}-${i}`} name={item.name} image={item.image} icon={item.icon} />
+          <LogoBox
+            key={`${item.name}-${i}`}
+            name={item.name}
+            image={item.image}
+            icon={item.icon}
+            maskColor={item.maskColor}
+          />
         ))}
       </div>
     </div>
