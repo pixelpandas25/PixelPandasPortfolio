@@ -7,10 +7,6 @@ const copy: Record<string, { title: string; description: string }> = {
     title: 'Services',
     description: 'Our full services page is almost ready. In the meantime, take a look at the work — or let’s talk about what you need.',
   },
-  '/testimonials': {
-    title: 'Testimonials',
-    description: 'Client stories are on the way. Until then, the work speaks for itself — or reach out and we’ll walk you through it.',
-  },
 };
 
 export default function ComingSoon() {

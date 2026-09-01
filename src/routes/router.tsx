@@ -5,6 +5,7 @@ import { PageShell } from '@/components/layout/PageShell';
 const Home = lazy(() => import('@/pages/Home'));
 const About = lazy(() => import('@/pages/About'));
 const Work = lazy(() => import('@/pages/Work'));
+const Testimonials = lazy(() => import('@/pages/Testimonials'));
 const ComingSoon = lazy(() => import('@/pages/ComingSoon'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
@@ -20,7 +21,7 @@ export const router = createBrowserRouter([
       { path: '/about', element: withSuspense(<About />) },
       { path: '/work', element: withSuspense(<Work />) },
       { path: '/services', element: withSuspense(<ComingSoon />) },
-      { path: '/testimonials', element: withSuspense(<ComingSoon />) },
+      { path: '/testimonials', element: withSuspense(<Testimonials />) },
       { path: '*', element: withSuspense(<NotFound />) },
     ],
   },
