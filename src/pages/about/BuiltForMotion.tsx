@@ -22,9 +22,9 @@ const items = [
 
 export function BuiltForMotion() {
   return (
-    <section data-nav-tone="dark" className="section-y bg-black px-6 sm:px-gutter-sm">
-      <div className="mx-auto max-w-site">
-        <h2 className="mb-8 text-display-4 font-bold leading-[1.35] text-[#dddddd]">
+    <section data-nav-tone="dark" className="bg-black px-6 py-16 sm:px-[100px] sm:py-[96px]">
+      <div className="mx-auto flex max-w-site flex-col gap-5 sm:gap-[20px]">
+        <h2 className="text-display-4 font-bold leading-[1.35] text-[#dddddd]">
           Built for people
           <br />
           in motion.
@@ -33,9 +33,9 @@ export function BuiltForMotion() {
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-3 sm:gap-20">
           {items.map((item) => (
             <div key={item.number} className="flex flex-col items-start gap-2">
-              <img src={item.image} alt="" aria-hidden className="h-[140px] w-auto object-contain" />
+              <img src={item.image} alt="" aria-hidden className="h-[140px] w-auto object-contain sm:h-[178px]" />
               <p className="text-display-5 font-semibold leading-[1.35] text-[#f2f2f2]">{item.number}</p>
-              <p className="text-body-lg leading-[1.35] text-[#8a8a93]">{item.text}</p>
+              <p className="text-body-lg font-medium leading-[1.35] text-[#8a8a93] sm:text-[20px]">{item.text}</p>
             </div>
           ))}
         </div>

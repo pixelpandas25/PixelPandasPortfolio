@@ -45,7 +45,7 @@ export function Footer() {
           />
         </motion.div>
 
-        <p className="mx-auto mt-10 max-w-md text-center text-body-lg text-muted">
+        <p className="mx-auto mt-10 max-w-md text-center text-body-lg text-muted sm:max-w-none sm:whitespace-nowrap">
           We&rsquo;ll handle everything that comes after.
         </p>
       </div>

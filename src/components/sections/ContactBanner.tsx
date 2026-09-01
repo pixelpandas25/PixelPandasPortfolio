@@ -26,7 +26,7 @@ function ChipList({
             href={chip.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 whitespace-nowrap text-body-lg text-muted transition-colors duration-hover hover:text-ink-900"
+            className="flex items-center gap-[7px] whitespace-nowrap text-body-lg leading-[1.6] text-muted transition-colors duration-hover hover:text-ink-900"
           >
             <img src={chip.icon} alt="" className="size-6" />
             {chip.label}
@@ -52,7 +52,7 @@ export function ContactBanner() {
       >
         {/* Email */}
         <p
-          className="absolute text-body-lg text-ink-900"
+          className="absolute text-body-lg leading-[1.6] text-ink-900"
           style={{
             left: '12.08%',
             top: '11.05%',
@@ -62,7 +62,7 @@ export function ContactBanner() {
         </p>
 
         {/* Phone - stands in for the missing word, tucked into the headline's gap and
-            mostly hidden above the section (Figma "Object" 638:4919) */}
+            mostly hidden above the section (Figma "Object" 638:5310) */}
         <motion.img
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -72,10 +72,10 @@ export function ContactBanner() {
           aria-hidden
           className="pointer-events-none absolute z-10 object-cover"
           style={{
-            left: '34.24%',
-            top: '-45.21%',
+            left: '34.58%',
+            top: '-39.21%',
             width: '6.99%',
-            height: '98%',
+            height: '93.59%',
           }}
         />
 
@@ -86,7 +86,7 @@ export function ContactBanner() {
         >
           {/* First row: "We're the [phone] team you contact" — the gap below is sized
               to match the phone's slot exactly, so it reads evenly on both sides */}
-          <div className="flex items-center" style={{ gap: '13.08cqw' }}>
+          <div className="flex items-center" style={{ gap: '12.08cqw' }}>
             <span
               className="whitespace-nowrap font-bold leading-none tracking-[-0.04em] text-[#3a3a3a]"
               style={{ fontSize: '4.444cqw',  wordSpacing: '0.08em', }}
@@ -115,7 +115,7 @@ export function ContactBanner() {
 
         {/* Social links */}
         <ChipList
-          className="absolute left-1/2 flex -translate-x-1/2 items-center gap-10"
+          className="absolute left-1/2 flex -translate-x-1/2 items-center gap-20"
           style={{
             top: '87.37%',
           }}

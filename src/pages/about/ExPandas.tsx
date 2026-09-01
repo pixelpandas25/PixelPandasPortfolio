@@ -3,15 +3,15 @@ import { alumni } from '@/data/team';
 
 export function ExPandas() {
   return (
-    <section data-nav-tone="dark" className="section-y bg-black px-6 sm:px-gutter-sm">
-        <div className="mx-auto flex max-w-site flex-col gap-8">
-        <div className="flex flex-col gap-5">
-          <p className="text-[2.75rem] font-medium leading-none tracking-tight text-white sm:text-[5rem]">
+    <section data-nav-tone="dark" className="bg-black px-6 py-14 sm:px-gutter-sm sm:py-[54px]">
+        <div className="mx-auto flex max-w-site flex-col gap-8 sm:gap-[63px]">
+        <div className="flex flex-col gap-5 sm:gap-[23px]">
+          <p className="text-[2.75rem] font-medium leading-none tracking-[-0.02em] text-white sm:text-[100px]">
             Ex Pandas
           </p>
-          <div className="flex flex-wrap items-center gap-2 text-body-lg font-medium tracking-tight text-[#d9d9d9]">
+          <div className="flex flex-wrap items-center gap-2 text-body-lg font-medium tracking-[-0.02em] text-[#d9d9d9] sm:gap-1 sm:text-[32px]">
             <span>Who pressed</span>
-            <span className="relative inline-block h-10 w-10 overflow-hidden align-middle">
+            <span className="relative inline-block h-10 w-10 overflow-hidden align-middle sm:h-[59.5px] sm:w-[58.5px]">
               <img
                 src={expandasIcon}
                 alt="Esc key"
@@ -25,13 +25,13 @@ export function ExPandas() {
 
         <div className="flex flex-wrap gap-8 sm:gap-11">
           {alumni.map((person) => (
-            <div key={person.id} className="flex w-[130px] flex-col items-center gap-3 sm:w-[180px]">
+            <div key={person.id} className="flex w-[130px] flex-col items-center gap-3 sm:w-[180px] sm:gap-[18px]">
               <img
                 src={person.photo}
                 alt={person.name}
                 className="size-[130px] rounded-full object-cover sm:size-[180px]"
               />
-              <p className="text-center text-nav font-medium tracking-tight text-[#d9d9d9] sm:text-body-lg">
+              <p className="text-center text-nav font-medium tracking-[-0.4px] text-[#d9d9d9] sm:text-[20px]">
                 {person.name}
               </p>
             </div>

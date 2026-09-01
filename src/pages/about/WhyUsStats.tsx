@@ -13,10 +13,10 @@ const stats = [
 
 export function WhyUsStats() {
   return (
-    <section data-nav-tone="light" className="section-y bg-paper px-6 sm:px-gutter">
+    <section data-nav-tone="light" className="bg-paper px-6 pb-16 pt-10 sm:px-gutter sm:pb-[80px] sm:pt-[40px]">
       <div className="mx-auto flex max-w-site flex-col gap-14 lg:flex-row lg:gap-20">
         <div className="flex shrink-0 flex-col gap-14 lg:w-[340px]">
-          <h2 className="text-display-3 font-medium leading-[1.05] text-[#1d1d1f]">
+          <h2 className="text-display-3 font-medium leading-[1.05] text-[#1d1d1f] lg:text-[80px]">
             Why
             <br />
             us
@@ -32,7 +32,7 @@ export function WhyUsStats() {
         </div>
 
         <div className="flex flex-1 flex-col gap-12">
-          <p className="text-body-lg font-medium leading-[1.45] text-[#1d1d1f]">
+          <p className="text-body-lg font-medium leading-[1.45] text-[#1d1d1f] sm:text-[26px]">
             We design and build tailored digital experiences that not only elevate your brand visually but also
             deliver measurable results that support long-term business growth.
           </p>
@@ -45,11 +45,11 @@ export function WhyUsStats() {
               >
                 <p
                   aria-hidden
-                  className="absolute -top-3 right-0 select-none text-[70px] font-bold tracking-widest text-white opacity-60 sm:text-[90px]"
+                  className="absolute -top-[28px] right-0 select-none text-[70px] font-bold tracking-[0.05em] text-white opacity-60 sm:-top-[38px] sm:text-[90px]"
                 >
                   {stat.value}
                 </p>
-                <p className="relative text-display-5 font-semibold text-[#1d1d1f]">{stat.value}</p>
+                <p className="relative text-display-5 font-semibold text-[#1d1d1f] sm:text-[56px]">{stat.value}</p>
                 <p className="relative text-body text-[#515154]">{stat.label}</p>
               </div>
             ))}
