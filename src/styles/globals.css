@@ -1,0 +1,51 @@
+@import '@fontsource/funnel-display/400.css';
+@import '@fontsource/funnel-display/500.css';
+@import '@fontsource/funnel-display/600.css';
+@import '@fontsource/funnel-display/700.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .section-y {
+    @apply py-10 sm:py-14;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-line-light;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    @apply bg-paper font-display text-ink antialiased;
+  }
+
+  ::selection {
+    @apply bg-accent text-ink-black;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
