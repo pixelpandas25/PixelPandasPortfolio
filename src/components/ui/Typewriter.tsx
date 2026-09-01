@@ -10,6 +10,7 @@ interface TypewriterProps {
   className?: string;
   style?: CSSProperties;
   speed?: number;
+  jitter?: number;
   startDelay?: number;
   showCursor?: boolean;
   onChar?: () => void;
@@ -28,6 +29,7 @@ export function Typewriter({
   className,
   style,
   speed,
+  jitter,
   startDelay,
   showCursor = true,
   onChar,
@@ -38,6 +40,7 @@ export function Typewriter({
   const { text: typed, done: typedDone } = useTypewriter(text, {
     active: active && !prefersReducedMotion,
     speed,
+    jitter,
     startDelay,
     onChar,
   });
@@ -59,7 +62,7 @@ export function Typewriter({
       {showCursor && active && !done && !prefersReducedMotion && (
         <span
           aria-hidden
-          className="ml-0.5 inline-block w-[0.5em] animate-pulse bg-current align-baseline"
+          className="ml-0.5 inline-block w-[0.09em] animate-caret-blink bg-current align-baseline"
           style={{ height: '0.9em' }}
         />
       )}

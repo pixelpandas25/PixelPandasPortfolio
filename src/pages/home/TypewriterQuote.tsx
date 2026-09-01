@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import typewriterImg from '@/assets/images/typewriter.webp';
 import { Typewriter } from '@/components/ui/Typewriter';
@@ -6,84 +5,83 @@ import { useInView } from '@/hooks/useInView';
 import { useTypewriterSound } from '@/hooks/useTypewriterSound';
 
 const HEADING = "If they don't feel it,\nthey won't remember it.";
-const BODY = "Design is not decoration.\nIt's the distance between forgettable and unforgettable.";
+const BODY_LINE_1 = 'Design is not decoration.';
+const BODY_LINE_2 = "It's the distance between forgettable and unforgettable.";
 const SIDE_LABEL = 'Does good design really matter?';
+
+/**
+ * The photo + its two text overlays, sized entirely in cqw/% of its own box
+ * so the same markup reproduces the Figma crop (image top -13.68%, height
+ * 126.8% of the frame) and text anchors at any breakpoint — only the frame's
+ * own width/height differ between the desktop and mobile wrappers below.
+ */
+function TypewriterPaper({ headingActive, onChar }: { headingActive: boolean; onChar: () => void }) {
+  return (
+    <div className="relative size-full overflow-hidden" style={{ containerType: 'inline-size' }}>
+      <img
+        src={typewriterImg}
+        alt="A vintage typewriter with a sheet of paper rolled in, ready to type"
+        className="absolute left-0 w-full max-w-none"
+        style={{ top: '-13.68%', height: '126.8%' }}
+      />
+
+      <div className="absolute left-[52.31%] top-[12.99%] w-[52.61%] -translate-x-1/2 -translate-y-1/2 px-1 text-center">
+        <Typewriter
+          text={HEADING}
+          active={headingActive}
+          speed={46}
+          jitter={60}
+          startDelay={600}
+          onChar={onChar}
+          className="break-words font-bold leading-[1.35] text-ink"
+          style={{ fontSize: '3.52cqw', letterSpacing: '-0.02em' }}
+        />
+      </div>
+
+      {/* Static — present in its final position from the start, never typed
+          or faded, and unaffected by the heading's typing animation. */}
+      <p
+        className="absolute left-[50.19%] top-[31.6%] w-[52.61%] -translate-x-1/2 -translate-y-1/2 px-1 text-center leading-[1.5] text-[#949494]"
+        style={{ fontSize: '2.05cqw', letterSpacing: '-0.02em' }}
+      >
+        {BODY_LINE_1}
+        <br />
+        {BODY_LINE_2}
+      </p>
+    </div>
+  );
+}
 
 export function TypewriterQuote() {
   const [sectionRef, inView] = useInView<HTMLElement>({ threshold: 0.4 });
-  const [headingDone, setHeadingDone] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const playClick = useTypewriterSound(!prefersReducedMotion);
 
   return (
-    <section
-      ref={sectionRef}
-      data-nav-tone="light"
-      className="section-y relative flex min-h-[100dvh] items-center overflow-hidden bg-paper px-6 sm:px-gutter-sm"
-    >
-      <div className="relative mx-auto w-full max-w-content">
-        {/* pinned near the left page-gutter, independent of the (centered) typewriter block —
-            fixed footprint so the rotated label doesn't reserve its unrotated (much wider) layout box.
-            Static label — it isn't "typed", it just sits beside the machine. */}
-        <div className="absolute left-0 top-1/2 hidden h-[300px] w-12 -translate-y-1/2 sm:block">
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <span className="inline-block -rotate-90 whitespace-nowrap text-body-lg font-semibold tracking-tight text-muted-4 sm:text-display-5">
-              {SIDE_LABEL}
-            </span>
-          </div>
+    <section ref={sectionRef} data-nav-tone="light" className="relative overflow-hidden bg-paper">
+      {/* Desktop: exact Figma 1440x760 composition, full width up to the site's max */}
+      <div className="relative mx-auto hidden w-full max-w-site lg:block" style={{ aspectRatio: '1440 / 760' }}>
+        <div
+          className="absolute flex items-center justify-center"
+          style={{ left: '3.75%', top: '4.47%', width: '7.22%', height: '90.66%' }}
+        >
+          <span className="-rotate-90 whitespace-nowrap text-display-5 font-semibold tracking-[-0.02em] text-muted-onDark">
+            {SIDE_LABEL}
+          </span>
         </div>
 
-        {/* outer frame: sized to the viewport, capped so it never forces the section taller */}
-        <div
-          className="relative mx-auto w-full"
-          style={{
-            aspectRatio: '682 / 780',
-            width: 'min(1280px, 99vw, calc(min(125dvh, 1350px) * 782 / 1024))',
-          }}
-        >
-          {/* photo-fit stage: matches the image's own aspect ratio and centers it inside the
-              (differently-proportioned) frame above — this is what object-contain would render,
-              made an explicit box so the text overlays can be positioned against the real photo
-              instead of the frame's empty letterboxed margins. */}
-          <div
-            className="absolute inset-y-0 left-1/2 -translate-x-1/2"
-            style={{ aspectRatio: '682 / 1024', width: 'auto', containerType: 'inline-size' }}
-          >
-            <img
-              src={typewriterImg}
-              alt="A vintage typewriter with a sheet of paper rolled in, ready to type"
-              className="size-full object-contain"
-            />
-
-            <div className="absolute left-[49%] top-[19%] w-[62%] -translate-x-1/2 -translate-y-1/2 px-1 text-center">
-              <Typewriter
-                text={HEADING}
-                active={inView}
-                speed={42}
-                startDelay={500}
-                onChar={playClick}
-                onDone={() => setHeadingDone(true)}
-                className="break-words font-bold leading-[1.35] text-black"
-                style={{ fontSize: '4.2cqw', letterSpacing: '-0.02em' }}
-              />
-            </div>
-
-            <div className="absolute left-[49%] top-[33%] w-[62%] -translate-x-1/2 -translate-y-1/2 px-1 text-center">
-              <Typewriter
-                text={BODY}
-                active={headingDone}
-                speed={26}
-                startDelay={250}
-                onChar={playClick}
-                className="break-words leading-[1.5] text-[#949494]"
-                style={{ fontSize: '2.7cqw', letterSpacing: '-0.02em' }}
-              />
-            </div>
-          </div>
+        <div className="absolute" style={{ left: '29.17%', top: '4.47%', width: '41.67%', height: '93.42%' }}>
+          <TypewriterPaper headingActive={inView} onChar={playClick} />
         </div>
       </div>
 
-      <p className="mt-6 text-center text-caption text-muted sm:hidden">{SIDE_LABEL}</p>
+      {/* Mobile / tablet: same composition, scaled to fit a narrower viewport */}
+      <div className="mx-auto flex max-w-site flex-col items-center gap-5 px-6 py-12 sm:px-gutter-sm sm:py-16 lg:hidden">
+        <div className="relative mx-auto w-full max-w-[420px]" style={{ aspectRatio: '600 / 710' }}>
+          <TypewriterPaper headingActive={inView} onChar={playClick} />
+        </div>
+        <p className="text-center text-caption text-muted">{SIDE_LABEL}</p>
+      </div>
     </section>
   );
 }

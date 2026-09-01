@@ -79,10 +79,15 @@ export default {
           '0%': { transform: 'translateX(-50%)' },
           '100%': { transform: 'translateX(0)' },
         },
+        'caret-blink': {
+          '0%, 45%': { opacity: '1' },
+          '50%, 100%': { opacity: '0' },
+        },
       },
       animation: {
         marquee: 'marquee 34s linear infinite',
         'marquee-reverse': 'marquee-reverse 34s linear infinite',
+        'caret-blink': 'caret-blink 1s step-end infinite',
       },
     },
   },

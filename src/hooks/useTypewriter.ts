@@ -34,23 +34,22 @@ export function useTypewriter(text: string, options: UseTypewriterOptions) {
 
     let cancelled = false;
     let timeoutId: ReturnType<typeof setTimeout>;
-    let index = 0;
     setOutput('');
 
-    const step = () => {
+    const typeFrom = (index: number) => {
       if (cancelled || index >= text.length) return;
-      index += 1;
-      const nextChar = text[index - 1];
-      setOutput(text.slice(0, index));
+
+      const nextChar = text[index];
+      setOutput(text.slice(0, index + 1));
       if (nextChar.trim()) onCharRef.current?.(nextChar);
 
-      if (index >= text.length) return;
+      if (index + 1 >= text.length) return;
       const extraPause = pauseAfter.test(nextChar) ? pauseMs : 0;
       const delay = speed + Math.random() * jitter + extraPause;
-      timeoutId = setTimeout(step, delay);
+      timeoutId = setTimeout(() => typeFrom(index + 1), delay);
     };
 
-    timeoutId = setTimeout(step, startDelay);
+    timeoutId = setTimeout(() => typeFrom(0), startDelay);
 
     return () => {
       cancelled = true;
