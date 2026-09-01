@@ -9,3 +9,6 @@ dist-ssr
 .DS_Store
 
 npm-debug.log*
+
+# graphify: generated knowledge graph, regenerate with `graphify update .`
+graphify-out/

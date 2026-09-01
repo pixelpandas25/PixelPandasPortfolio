@@ -1,0 +1,4 @@
+# graphify generated output — query via `graphify query`/`path`/`explain` instead
+# of reading these directly; keeps large generated artifacts out of raw context.
+graphify-out/
+graph.json
