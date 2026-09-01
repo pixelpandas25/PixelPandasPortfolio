@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 type ButtonVariant = 'primary' | 'secondary' | 'navCta';
-type ButtonSize = 'default' | 'compact';
+type ButtonSize = 'default' | 'compact' | 'lg';
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary: 'bg-ink-black text-paper hover:bg-ink-soft',
@@ -16,6 +16,7 @@ const variantClasses: Record<ButtonVariant, string> = {
 const sizeClasses: Record<ButtonSize, string> = {
   default: 'px-6 py-4 text-label',
   compact: 'px-5 py-3 text-nav',
+  lg: 'px-9 py-6 text-[22.5px]',
 };
 
 interface CommonProps {

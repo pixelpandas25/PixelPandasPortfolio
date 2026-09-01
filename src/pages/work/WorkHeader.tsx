@@ -19,7 +19,7 @@ export function WorkHeader({ active, onChange }: WorkHeaderProps) {
     <header data-nav-tone="light" className="bg-paper px-6 pb-6 pt-32 sm:px-gutter-sm sm:pt-36">
       <div className="mx-auto flex max-w-site flex-col gap-8">
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-          <h1 className="text-display-4 font-bold tracking-tight text-[#121212]">Our Work</h1>
+          <h1 className="text-display-4 font-bold text-[#121212]">Our Work</h1>
           <div className="flex items-center gap-3">
             <Button href="mailto:hello@pixelpandas.in" variant="secondary">
               Talk to Founder

@@ -75,6 +75,9 @@ export const workProjects: Project[] = [
     category: 'Branding',
     categoryLabel: 'Branding & Marketing Visuals',
     image: coreclubb,
+    // Figma zooms this card's image in slightly (142.06% height, offset -0.1% from top)
+    // rather than a plain object-fit: cover of the source asset.
+    imageCrop: { left: '0%', top: '0.1%', width: '100%', height: '142.06%' },
   },
   {
     id: 'supermission',
@@ -115,6 +118,8 @@ export const workProjects: Project[] = [
     category: 'UI/UX',
     categoryLabel: 'Platform Design Edtech',
     image: takeUforward2,
+    // Figma zooms this card's image in (126.53% height, offset -13.26% from top).
+    imageCrop: { left: '0%', top: '-13.26%', width: '100%', height: '126.53%' },
   },
 ];
 
