@@ -24,6 +24,7 @@ export function Shortcuts() {
   return (
     <section data-nav-tone="light" className="bg-paper px-6 py-16 sm:px-gutter-sm sm:py-[96px]">
       <div
+        data-nav-tone="dark"
         className="relative mx-auto max-w-[1280px] overflow-hidden rounded-[32px] bg-[#121210] px-8 pb-16 pt-14 shadow-[0_24px_48px_rgba(0,0,0,0.15)] sm:px-20 sm:pb-[90px] sm:pt-[80px]"
         style={{
           backgroundImage:

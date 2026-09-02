@@ -4,11 +4,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { navLinks } from '@/data/navLinks';
 import { cn } from '@/lib/utils';
 import { useNavTone } from '@/hooks/useNavTone';
+import { useAutoHideNav } from '@/hooks/useAutoHideNav';
 import logo from '@/assets/images/logo.webp';
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const tone = useNavTone();
+  const autoHideVisible = useAutoHideNav();
+  const visible = autoHideVisible || mobileOpen;
   const { pathname } = useLocation();
   const onDark = tone === 'dark';
 
@@ -19,7 +22,18 @@ export function Navbar() {
   };
 
   return (
-    <header data-site-nav className="fixed inset-x-0 top-6 z-50 flex justify-center px-4">
+    <motion.header
+      data-site-nav
+      initial={false}
+      animate={visible ? 'visible' : 'hidden'}
+      variants={{
+        visible: { y: '0%', opacity: 1 },
+        hidden: { y: '-150%', opacity: 0 },
+      }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      style={{ pointerEvents: visible ? 'auto' : 'none' }}
+      className="fixed inset-x-0 top-6 z-[70] flex justify-center px-4"
+    >
       <nav
         aria-label="Primary"
         className="flex w-auto items-center gap-4 rounded-pill bg-[rgba(28,28,28,0.2)] p-[6px] backdrop-blur-md lg:w-full lg:max-w-[572px] lg:gap-8"
@@ -119,6 +133,6 @@ export function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </motion.header>
   );
 }

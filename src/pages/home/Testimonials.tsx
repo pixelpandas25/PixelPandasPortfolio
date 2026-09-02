@@ -37,7 +37,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 
 export function Testimonials() {
   return (
-    <section data-nav-tone="light" className="section-y bg-paper">
+    <section id="testimonials" data-nav-tone="light" className="section-y bg-paper">
       <div className="mx-auto flex max-w-site flex-col gap-12 pl-6 sm:pl-gutter-sm">
         <div className="flex flex-col gap-2">
           <EyebrowLabel>Testimonials</EyebrowLabel>

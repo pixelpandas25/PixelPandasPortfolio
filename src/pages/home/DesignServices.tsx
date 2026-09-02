@@ -241,7 +241,7 @@ export function DesignServices() {
         ========================================================== */}
         <div className="relative z-30 flex flex-col items-center gap-1 text-center">
           <h2 className="text-display-4 font-bold leading-[1.35]">
-            <span className="text-[#d9d9d9]">
+            <span className="text-[#7A7A7A]">
               Our
             </span>{' '}
 
