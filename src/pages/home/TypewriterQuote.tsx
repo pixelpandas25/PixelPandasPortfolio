@@ -55,7 +55,7 @@ function TypewriterPaper({ headingActive, onChar }: { headingActive: boolean; on
 export function TypewriterQuote() {
   const [sectionRef, inView] = useInView<HTMLElement>({ threshold: 0.4 });
   const prefersReducedMotion = useReducedMotion();
-  const playClick = useTypewriterSound(!prefersReducedMotion);
+  const playClick = () => {};
 
   return (
     <section ref={sectionRef} data-nav-tone="light" className="relative overflow-hidden bg-paper">

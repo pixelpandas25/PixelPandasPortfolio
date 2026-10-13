@@ -68,7 +68,7 @@ export function Navbar() {
         </ul>
 
         <RouterNavLink
-          to="/#contact"
+          to="/contact"
           className="ml-auto hidden shrink-0 rounded-pill bg-paper px-5 py-3 text-nav font-medium text-ink-900 transition-colors duration-hover hover:bg-surface-light lg:inline-flex"
         >
           Let&rsquo;s Talk
@@ -122,7 +122,7 @@ export function Navbar() {
               ))}
               <li>
                 <RouterNavLink
-                  to="/#contact"
+                  to="/contact"
                   onClick={() => setMobileOpen(false)}
                   className="mt-2 block rounded-pill bg-ink-black px-3 py-3 text-center text-body font-medium text-paper"
                 >
