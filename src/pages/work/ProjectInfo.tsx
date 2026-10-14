@@ -16,7 +16,7 @@ interface ProjectInfoProps {
   detail: ProjectDetail;
 }
 
-export function ProjectInfo({ project, detail }: ProjectInfoProps) {
+export function ProjectInfo({ detail }: ProjectInfoProps) {
   return (
     <section data-nav-tone="light" className="bg-paper pt-[87px] pb-[87px] px-6 sm:px-[70px]">
       <motion.div

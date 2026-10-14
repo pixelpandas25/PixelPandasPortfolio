@@ -1,7 +1,6 @@
 import { useParams, Navigate } from 'react-router-dom';
 import { Seo } from '@/components/Seo';
 import { ClosingCta } from './work/ClosingCta';
-import { ContactBanner } from '@/components/sections/ContactBanner';
 import { ProjectHero } from './work/ProjectHero';
 import { ProjectInfo } from './work/ProjectInfo';
 import { ProjectGallery } from './work/ProjectGallery';
@@ -18,7 +17,8 @@ export default function ProjectDetail() {
     return <Navigate to="/work" replace />;
   }
 
-  const [heroImage, ...galleryImages] = detail.images;
+  const heroImage = detail.images[0] as string;
+  const galleryImages = detail.images.slice(1);
 
   return (
     <>

@@ -1,8 +1,8 @@
-import { useReducedMotion } from 'framer-motion';
+
 import typewriterImg from '@/assets/images/typewriter.webp';
 import { Typewriter } from '@/components/ui/Typewriter';
 import { useInView } from '@/hooks/useInView';
-import { useTypewriterSound } from '@/hooks/useTypewriterSound';
+
 
 const HEADING = "If they don't feel it,\nthey won't remember it.";
 const BODY_LINE_1 = 'Design is not decoration.';
@@ -54,7 +54,6 @@ function TypewriterPaper({ headingActive, onChar }: { headingActive: boolean; on
 
 export function TypewriterQuote() {
   const [sectionRef, inView] = useInView<HTMLElement>({ threshold: 0.4 });
-  const prefersReducedMotion = useReducedMotion();
   const playClick = () => {};
 
   return (
