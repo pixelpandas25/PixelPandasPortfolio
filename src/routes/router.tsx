@@ -5,6 +5,7 @@ import { PageShell } from '@/components/layout/PageShell';
 const Home = lazy(() => import('@/pages/Home'));
 const About = lazy(() => import('@/pages/About'));
 const Work = lazy(() => import('@/pages/Work'));
+const ProjectDetail = lazy(() => import('@/pages/ProjectDetail'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const ComingSoon = lazy(() => import('@/pages/ComingSoon'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
       { path: '/', element: withSuspense(<Home />) },
       { path: '/about', element: withSuspense(<About />) },
       { path: '/work', element: withSuspense(<Work />) },
+      { path: '/work/:projectId', element: withSuspense(<ProjectDetail />) },
       { path: '/contact', element: withSuspense(<Contact />) },
       { path: '/services', element: withSuspense(<ComingSoon />) },
       // Client-side redirect only — not a server HTTP 301. /testimonials was
