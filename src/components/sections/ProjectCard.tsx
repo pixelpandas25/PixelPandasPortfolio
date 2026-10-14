@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { Project } from '@/types';
 import { cn } from '@/lib/utils';
 import arrowLink from '@/assets/icons/project-arrow-link.svg';
+
+const MotionLink = motion(Link);
 
 /** Figma default (ungrouped/un-hovered) title and meta colors for the Our Work grid. */
 const GRID_TITLE_GRAY = '#3a3a3a';
@@ -32,8 +35,8 @@ export function ProjectCard({
   const isGrid = captionVariant === 'simple';
 
   return (
-    <motion.a
-      href={project.href ?? '#'}
+    <MotionLink
+      to={`/work/${project.id}`}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       whileHover="hover"
@@ -96,6 +99,6 @@ export function ProjectCard({
           <img src={arrowLink} alt="" aria-hidden className="size-8" />
         </motion.span>
       </div>
-    </motion.a>
+    </MotionLink>
   );
 }

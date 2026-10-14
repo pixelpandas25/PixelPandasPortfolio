@@ -31,6 +31,16 @@ export interface Project {
   href?: string;
 }
 
+export interface ProjectDetail {
+  /** Regular images are strings. A nested string[] renders as a scroll-hijacked horizontal strip. */
+  images: (string | string[])[];
+  collaboration?: string;
+  problemDefinition?: string;
+  industry?: string;
+  services?: string[];
+  website?: string;
+}
+
 export interface Testimonial {
   id: string;
   quote?: string;
