@@ -121,6 +121,14 @@ export const workProjects: Project[] = [
     // Figma zooms this card's image in (126.53% height, offset -13.26% from top).
     imageCrop: { left: '0%', top: '-13.26%', width: '100%', height: '126.53%' },
   },
+  {
+    id: 'biopole-uiux',
+    name: 'Biopole',
+    brandColor: '#a8175d',
+    category: 'UI/UX',
+    categoryLabel: 'UX Design',
+    image: biopole,
+  },
 ];
 
 export const homeShowcaseProjects: Project[] = [

@@ -18,7 +18,18 @@ const imgs = Object.fromEntries(
 
 export const projectDetails: Record<string, ProjectDetail> = {
   scapia: {
-    images: ['01', '02', '03', '04', '05', '06', '07'].map(f => imgs[`scapia/${f}`]).filter(Boolean) as string[],
+    images: (() => {
+      const s = (f: string) => imgs[`scapia/${f}`] as string | undefined;
+      const carousel = ['04-01', '04-02', '04-03', '04-04', '04-05', '04-06', '04-07']
+        .map(s).filter(Boolean) as string[];
+      return [
+        s('01'), s('02'), s('03'),
+        carousel.length > 0 ? carousel : null,
+        s('05'), s('06'), s('07'),
+      ].filter((v): v is string | string[] =>
+        Array.isArray(v) ? v.length > 0 : Boolean(v)
+      );
+    })(),
     collaboration: 'Scapia',
     problemDefinition: 'Building a distinct visual identity for a fintech credit card brand that needed to feel premium yet approachable to a young, travel-savvy audience.',
     industry: 'Fintech',

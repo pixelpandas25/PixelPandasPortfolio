@@ -1,13 +1,30 @@
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef, useState } from 'react';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 interface ProjectGalleryProps {
   images: (string | string[])[];
   projectName: string;
 }
 
-// Matches Figma frame "04": cards at ~75vw wide, 2 partially visible at a time.
-// Vertical scroll is hijacked and drives horizontal translation through all cards.
+function CardImage({ src, alt }: { src: string; alt: string }) {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="relative h-full w-full">
+      {!loaded && (
+        <div className="absolute inset-0 animate-pulse rounded-[24px] bg-surface-light" />
+      )}
+      <img
+        src={src}
+        alt={alt}
+        onLoad={() => setLoaded(true)}
+        className={`h-full w-full object-contain transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  );
+}
+
 function HorizontalScrollGroup({
   images,
   projectName,
@@ -23,44 +40,47 @@ function HorizontalScrollGroup({
     offset: ['start start', 'end end'],
   });
 
-  // N-1 transitions so the last card also ends up fully in view
-  const steps = images.length - 1;
-  const CARD_W = 75;  // vw — matches 1080/1440 Figma proportion
-  const GAP_W = 1.5;  // vw — matches 91px at 1440px viewport
+  const CARD_W   = 648;  // px — natural exported width
+  const CARD_H   = 810;  // px — natural exported height
+  const GAP      = 24;   // px between cards
+  const steps    = images.length - 1;
+  const SECTION_H = CARD_H + 200; // card + 100px top & bottom padding
 
-  const x = useTransform(
-    scrollYProgress,
-    [0, 1],
-    ['0vw', `-${steps * (CARD_W + GAP_W)}vw`]
-  );
+  // Numeric transform → spring for smooth horizontal movement
+  const rawX = useTransform(scrollYProgress, [0, 1], [0, -steps * (CARD_W + GAP)]);
+  const x = useSpring(rawX, { stiffness: 100, damping: 30, mass: 0.5 });
 
-  // Outer height = sticky section height + scroll room (80vh per card transition)
-  const outerHeight = `calc(90vh + ${steps * 80}vh)`;
+  // 40vh per step (halved from 80vh) reduces trailing white space after last card
+  const outerHeight = `calc(min(${SECTION_H}px, 95vh) + ${steps * 40}vh)`;
 
   return (
-    <div ref={ref} data-nav-tone="light" style={{ height: outerHeight }}>
-      <div className="sticky top-0 flex h-[90vh] items-center overflow-hidden bg-paper">
+    <div ref={ref} data-nav-tone="light" className="mt-[100px]" style={{ height: outerHeight }}>
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.05 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="sticky top-0 flex items-center overflow-hidden bg-paper py-[100px]"
+        style={{ height: `min(${SECTION_H}px, 95vh)` }}
+      >
         <motion.div
-          style={{ x }}
-          className="flex h-[85vh] gap-[1.5vw] pl-6 sm:pl-[70px]"
+          style={{ x, gap: `${GAP}px` }}
+          className="flex flex-shrink-0 pl-6 sm:pl-[70px]"
         >
           {images.map((src, i) => (
             <div
               key={src || i}
-              className="h-full flex-shrink-0 overflow-hidden rounded-[32px]"
-              style={{ width: `${CARD_W}vw` }}
+              className="flex-shrink-0 overflow-hidden rounded-[24px]"
+              style={{ width: `${CARD_W}px`, height: `${CARD_H}px` }}
             >
-              <img
+              <CardImage
                 src={src}
                 alt={`${projectName} — project visual ${indexOffset + i + 1}`}
-                className="h-full w-full object-cover"
-                loading="lazy"
-                decoding="async"
               />
             </div>
           ))}
         </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 }
