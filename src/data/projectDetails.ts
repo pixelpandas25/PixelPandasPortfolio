@@ -18,7 +18,21 @@ const imgs = Object.fromEntries(
 
 export const projectDetails: Record<string, ProjectDetail> = {
   scapia: {
-    images: ['01', '02', '03', '04', '05', '06', '07'].map(f => imgs[`scapia/${f}`]).filter(Boolean) as string[],
+    images: (() => {
+      const s = (f: string) => imgs[`scapia/${f}`] as string | undefined;
+      const carousel1 = ['04-01', '04-02', '04-03', '04-04', '04-05', '04-06', '04-07']
+        .map(s).filter(Boolean) as string[];
+      const carousel2 = ['06-01', '06-02', '06-03', '06-07', '06-08', '06-09', '06-10', '06-11', '06-12', '06-13', '06-14', '06-15', '06-16', '06-17']
+        .map(s).filter(Boolean) as string[];
+      return [
+        s('01'), s('02'), s('03'),
+        carousel1.length > 0 ? carousel1 : null,
+        s('05'),
+        carousel2.length > 0 ? carousel2 : null,
+      ].filter((v): v is string | string[] =>
+        Array.isArray(v) ? v.length > 0 : Boolean(v)
+      );
+    })(),
     collaboration: 'Scapia',
     problemDefinition: 'Building a distinct visual identity for a fintech credit card brand that needed to feel premium yet approachable to a young, travel-savvy audience.',
     industry: 'Fintech',
@@ -33,12 +47,20 @@ export const projectDetails: Record<string, ProjectDetail> = {
     services: ['Logo Design', 'Branding', 'Packaging'],
     website: '',
   },
-  biopole: {
-    images: ['01', '02', '03', '04', '05', '06', '07'].map(f => imgs[`biopole/${f}`]).filter(Boolean) as string[],
+  'biopole-branding': {
+    images: ['01', '02', '03', '04', '05', '06'].map(f => imgs[`biopole-branding/${f}`]).filter(Boolean) as string[],
     collaboration: 'Biopole',
     problemDefinition: 'Designing marketing visuals for a sustainable brand that needed to communicate science-backed credibility alongside its eco-first mission.',
     industry: 'Sustainable / Health',
     services: ['Marketing Visuals', 'UX Design'],
+    website: '',
+  },
+  'biopole-platform': {
+    images: ['01', '02', '03', '04', '05', '06'].map(f => imgs[`biopole-platform/${f}`]).filter(Boolean) as string[],
+    collaboration: 'Biopole',
+    problemDefinition: 'Designing an intuitive UX for a sustainable health brand that needed to balance science-backed credibility with a seamless, user-first digital experience.',
+    industry: 'Sustainable / Health',
+    services: ['UX Design', 'Product Design'],
     website: '',
   },
   'tle-eliminator': {
@@ -66,7 +88,12 @@ export const projectDetails: Record<string, ProjectDetail> = {
     website: 'https://takeuforward.org',
   },
   coreclubb: {
-    images: ['01', '02', '03', '04', '05', '06', '07'].map(f => imgs[`coreclubb/${f}`]).filter(Boolean) as string[],
+    images: [
+      ...['01', '02', '03', '05', '07', '08', '09'].map(f => imgs[`coreclubb/${f}`]).filter(Boolean) as string[],
+      ['10-01', '10-02', '10-03', '10-04', '10-05', '10-06', '10-07', '10-08']
+        .map(f => imgs[`coreclubb/${f}`])
+        .filter(Boolean) as string[],
+    ],
     collaboration: 'coreclubb',
     problemDefinition: 'Building a full brand system and marketing visuals for a health & wellness startup that wanted to feel energetic, premium and community-first.',
     industry: 'Health & Wellness',

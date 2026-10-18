@@ -4,8 +4,8 @@ import { cn } from '@/lib/utils';
 
 import servicesAvatar from '@/assets/images/services-avatar.webp';
 import folderOutline from '@/assets/icons/services-folder-outline.svg';
-import folderMatte from '@/assets/images/services-folder-matte.png';
-import folderShapeMask from '@/assets/images/services-folder-shape-mask.png';
+import folderMatte from '@/assets/images/services-folder-matte.webp';
+import folderShapeMask from '@/assets/images/services-folder-shape-mask.webp';
 import pandaIcon from '@/assets/icons/services-panda-icon.svg';
 
 import iconDev from '@/assets/icons/svc-icon-dev.svg';

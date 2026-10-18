@@ -32,7 +32,7 @@ export interface Project {
 }
 
 export interface ProjectDetail {
-  /** Regular images are strings. A nested string[] renders as a scroll-hijacked horizontal strip. */
+  /** Regular strings are images. A nested string[] renders as a scroll-hijacked horizontal strip. */
   images: (string | string[])[];
   collaboration?: string;
   problemDefinition?: string;

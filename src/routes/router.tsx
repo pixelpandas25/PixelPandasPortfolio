@@ -7,7 +7,7 @@ const About = lazy(() => import('@/pages/About'));
 const Work = lazy(() => import('@/pages/Work'));
 const ProjectDetail = lazy(() => import('@/pages/ProjectDetail'));
 const Contact = lazy(() => import('@/pages/Contact'));
-const ComingSoon = lazy(() => import('@/pages/ComingSoon'));
+const Services = lazy(() => import('@/pages/Services'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
 function withSuspense(element: ReactNode) {
@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
       { path: '/work', element: withSuspense(<Work />) },
       { path: '/work/:projectId', element: withSuspense(<ProjectDetail />) },
       { path: '/contact', element: withSuspense(<Contact />) },
-      { path: '/services', element: withSuspense(<ComingSoon />) },
+      { path: '/services', element: withSuspense(<Services />) },
       // Client-side redirect only — not a server HTTP 301. /testimonials was
       // never listed in public/sitemap.xml, so no canonical URL is lost, but a
       // crawler/bot that doesn't execute JS (or ignores history.replaceState)
