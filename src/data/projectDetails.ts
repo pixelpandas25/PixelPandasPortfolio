@@ -49,8 +49,8 @@ export const projectDetails: Record<string, ProjectDetail> = {
   },
   'biopole-branding': {
     images: [
-      ...['01', '02'].map(f => imgs[`biopole-branding/${f}`]).filter(Boolean) as string[],
-      ['03', '04', '05', '06'].map(f => imgs[`biopole-branding/${f}`]).filter(Boolean) as string[],
+      ...['01', '02', '03', '04', '05'].map(f => imgs[`biopole-branding/${f}`]).filter(Boolean) as string[],
+      ['06'].map(f => imgs[`biopole-branding/${f}`]).filter(Boolean) as string[],
     ],
     collaboration: 'Biopole',
     problemDefinition: 'Designing marketing visuals for a sustainable brand that needed to communicate science-backed credibility alongside its eco-first mission.',
