@@ -1,7 +1,22 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import trafficLights from '@/assets/icons/browser-traffic-lights.svg';
 import windowDots from '@/assets/icons/window-dots.svg';
+import bulletCheck from '@/assets/icons/bullet-check.svg';
+import bulletX from '@/assets/icons/bullet-x.svg';
+
+const forList = [
+  'Founders mid-build, still figuring out what design they even need',
+  'Teams ready to scale with design that has to keep up',
+  'People who need it shipped fast, not "eventually"',
+  'Builders happy to hand over the headache and get on with it',
+  'Products where design and engineering actually talk to each other',
+  'Anyone who wants a partner, not just a pair of hands',
+];
 
 const notForList = [
-  '"Here are five options, you pick" — with no conversation',
+  '"Here are five options, you pick"  with no conversation',
   'Design by committee, where nothing ever gets decided',
   'Briefs that begin and end at "make it pop"',
   'Teams looking for a vendor to boss around',
@@ -10,6 +25,9 @@ const notForList = [
 ];
 
 export function NotForEveryone() {
+  const [tab, setTab] = useState<'for' | 'not'>('for');
+  const isFor = tab === 'for';
+
   return (
     <section data-nav-tone="light" className="bg-paper px-6 pb-16 pt-10 sm:px-gutter-sm sm:pb-[96px] sm:pt-[48px]">
       <div className="mx-auto flex max-w-content flex-col items-center gap-5">
@@ -17,40 +35,101 @@ export function NotForEveryone() {
           We&rsquo;re not for everyone.
         </h2>
 
-        <div className="w-full overflow-hidden rounded-[30px] border-[1.25px] border-[#e8e3dd] bg-[#fbf9f6]/20 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
-          <div className="flex h-[60px] items-center gap-[17.5px] border-b-[1.25px] border-[#e8e3dd] pl-5 pr-[30px]">
-            <img src={windowDots} alt="" aria-hidden className="h-[13px] w-auto" />
-            <p className="text-caption font-medium text-[#7e7a75]">who-were-not.md</p>
-          </div>
+        {/* Browser card */}
+        <motion.div
+          animate={{
+            borderColor: isFor ? '#eaeae3' : '#e8e3dd',
+          }}
+          transition={{ duration: 0.3 }}
+          className="w-full overflow-hidden rounded-[30px] border-[1.25px] shadow-[0_10px_30px_rgba(0,0,0,0.05)]"
+          style={{ background: 'rgba(250,250,247,0.2)' }}
+        >
+          {/* Browser chrome header */}
+          <motion.div
+            animate={{ borderColor: isFor ? '#eaeae3' : '#e8e3dd' }}
+            transition={{ duration: 0.3 }}
+            className="flex h-[60px] items-center gap-[17.5px] border-b-[1.25px] pl-5 pr-[30px]"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.img
+                key={tab + '-icon'}
+                src={isFor ? trafficLights : windowDots}
+                alt=""
+                aria-hidden
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="h-[13px] w-auto"
+              />
+            </AnimatePresence>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.p
+                key={tab + '-filename'}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="font-mono text-[13.75px] font-medium text-[#7e7a75]"
+              >
+                {isFor ? 'who-were-for.md' : 'who-were-not.md'}
+              </motion.p>
+            </AnimatePresence>
+          </motion.div>
 
+          {/* Card body */}
           <div className="flex flex-col gap-8 p-6 sm:gap-[45px] sm:p-[50px]">
-            <div className="flex items-center gap-2 self-start rounded-pill border border-[#d9d9d9]/50 bg-white/25 p-1">
-              <span className="rounded-pill px-[10px] py-[10px] text-body text-muted sm:text-[20px] sm:font-medium">
+            {/* Tab switcher */}
+            <div className="flex items-center gap-0 self-start rounded-pill border border-[#d9d9d9]/50 bg-white/25 p-2">
+              <button
+                onClick={() => setTab('for')}
+                className={`rounded-pill px-5 py-2.5 text-[20px] font-medium transition-all duration-300 ${
+                  isFor ? 'bg-black text-white' : 'text-[#7a7a7a]'
+                }`}
+              >
                 Who we&rsquo;re for
-              </span>
-              <span className="rounded-pill bg-black/80 px-5 py-2.5 text-body text-paper sm:text-[20px] sm:font-medium">
+              </button>
+              <button
+                onClick={() => setTab('not')}
+                className={`rounded-pill px-5 py-2.5 text-[20px] font-medium transition-all duration-300 ${
+                  !isFor ? 'bg-[rgba(0,0,0,0.8)] text-white' : 'text-[#7a7a7a]'
+                }`}
+              >
                 Who we&rsquo;re not for
-              </span>
+              </button>
             </div>
 
-            <ul className="flex flex-col gap-6 sm:gap-[25px]">
-              {notForList.map((item) => (
-                <li key={item} className="flex items-center gap-4 sm:gap-[17.5px]">
-                  <span className="flex size-[30px] shrink-0 items-center justify-center rounded-[7.5px] bg-[#ffeae6] text-label font-bold text-[#ff7a6a] sm:text-[17.5px]">
-                    ×
-                  </span>
-                  <p className="text-body-lg leading-[1.4] text-[#141414] sm:text-[20px]">{item}</p>
-                </li>
-              ))}
-            </ul>
+            {/* Bullet list */}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.ul
+                key={tab}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-col gap-6 sm:gap-[25px]"
+              >
+                {(isFor ? forList : notForList).map((item) => (
+                  <li key={item} className="flex items-center gap-4 sm:gap-[20px]">
+                    {isFor ? (
+                      <img src={bulletCheck} alt="" aria-hidden className="h-[25.847px] w-[30px] shrink-0" />
+                    ) : (
+                      <img src={bulletX} alt="" aria-hidden className="size-[32px] shrink-0" />
+                    )}
+                    <p className="text-[20px] leading-[1.4] text-[#141414]">{item}</p>
+                  </li>
+                ))}
+              </motion.ul>
+            </AnimatePresence>
           </div>
-        </div>
+        </motion.div>
 
-        <p className="max-w-2xl text-center text-body-lg text-[#8a8a93] sm:w-[824px] sm:max-w-none sm:text-[20px]">
+        {/* Footer text */}
+        <p className="max-w-2xl text-center text-[20px] leading-[1.35] text-[#8a8a93] sm:w-[824px] sm:max-w-none">
           See yourself on the left? Then we&rsquo;re already aligned.{' '}
-          <a href="/#contact" className="text-[#1a62ec] underline underline-offset-2">
+          <Link to="/contact" className="text-[#1a62ec] underline underline-offset-2">
             Reach out
-          </a>
+          </Link>
         </p>
       </div>
     </section>
