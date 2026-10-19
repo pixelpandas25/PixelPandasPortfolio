@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 const copy: Record<string, { title: string; description: string }> = {
   '/services': {
     title: 'Services',
-    description: ‘Our full services page is almost ready. In the meantime, take a look at the work, or reach out about what you need.’,
+    description: 'Our full services page is almost ready. In the meantime, take a look at the work, or reach out about what you need.',
   },
 };
 
