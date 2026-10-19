@@ -7,6 +7,8 @@ import avatarSiddhant from '@/assets/images/avatar-siddhant.webp';
 import avatarDivyanshu from '@/assets/images/avatar-divyanshu.webp';
 import mediaStriver from '@/assets/images/testimonial-striver.webp';
 import mediaMihika from '@/assets/images/testimonial-mihika.webp';
+import videoStriver from '@/assets/images/Testimonial/Striver.mp4';
+import videoMihika from '@/assets/images/Testimonial/Mihikha.mp4';
 
 export const testimonials: Testimonial[] = [
   {
@@ -22,6 +24,7 @@ export const testimonials: Testimonial[] = [
     id: 'striver',
     variant: 'media',
     image: mediaStriver,
+    video: videoStriver,
     name: 'Striver',
     role: 'Founder @takeUforward',
   },
@@ -38,6 +41,7 @@ export const testimonials: Testimonial[] = [
     id: 'mihika',
     variant: 'media',
     image: mediaMihika,
+    video: videoMihika,
     name: 'Mihika Sampat',
     role: 'CEO @Elastochemie Impex',
   },

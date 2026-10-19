@@ -4,10 +4,6 @@ interface LogoItem {
   name: string;
   image?: string;
   icon?: string;
-  /**
-   * Figma renders this logo as a solid-color mask rather than the literal source
-   * image. The raw asset is used only as an alpha mask.
-   */
   maskColor?: string;
 }
 
@@ -24,172 +20,91 @@ import logoRowB4 from '@/assets/images/logo-rowB-4.webp';
 import logoThaatbaat from '@/assets/images/logo-rowB-thaatbaat.webp';
 import logoAicaIcon from '@/assets/icons/logo-aica-icon.svg';
 
-/* ------------------------------------------------------------ */
-/* LOGO COLORS                                                  */
-/* ------------------------------------------------------------ */
-
-const MASK_GRAY = '#3A3A3A';
-
-/* ------------------------------------------------------------ */
-/* LOGO DATA                                                    */
-/* ------------------------------------------------------------ */
+const LOGO_COLOR = '#626262';
 
 const rowA: LogoItem[] = [
-  {
-    name: 'GrowthPlus',
-    image: logoGrowthplus,
-  },
-  {
-    name: 'takeUforward',
-    image: logoRowA2,
-    maskColor: MASK_GRAY,
-  },
-  {
-    name: 'TLE Eliminator',
-    image: logoTle,
-  },
-  {
-    name: 'Client logo',
-    image: logoRowA4,
-  },
-  {
-    name: 'Client logo',
-    image: logoRowA5,
-  },
-  {
-    name: 'Zenith',
-    image: logoRowA6,
-    maskColor: MASK_GRAY,
-  },
+  { name: 'GrowthPlus',    image: logoGrowthplus },
+  { name: 'takeUforward',  image: logoRowA2, maskColor: LOGO_COLOR },
+  { name: 'TLE Eliminator',image: logoTle },
+  { name: 'Client logo',   image: logoRowA4, maskColor: LOGO_COLOR },
+  { name: 'Client logo',   image: logoRowA5, maskColor: LOGO_COLOR },
+  { name: 'Zenith',        image: logoRowA6, maskColor: LOGO_COLOR },
 ];
 
 const rowB: LogoItem[] = [
-  {
-    name: 'G+',
-    image: logoGplus,
-  },
-  {
-    name: 'CoreClubb',
-    image: logoCoreclubb,
-  },
-  {
-    name: 'Client logo',
-    image: logoRowB3,
-  },
-  {
-    name: 'Client logo',
-    image: logoRowB4,
-  },
-  {
-    name: 'AICA',
-    icon: logoAicaIcon,
-  },
-  {
-    name: 'Thaat Baat',
-    image: logoThaatbaat,
-  },
+  { name: 'G+',        image: logoGplus },
+  { name: 'CoreClubb', image: logoCoreclubb },
+  { name: 'Scapia',    image: logoRowB3 },
+  { name: 'Client',    image: logoRowB4 },
+  { name: 'AICA',      icon: logoAicaIcon },
+  { name: 'Thaat Baat',image: logoThaatbaat },
 ];
 
-/* ------------------------------------------------------------ */
-/* LOGO BOX                                                     */
-/* ------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+/* LOGO BOX                                                             */
+/* ------------------------------------------------------------------ */
 
-function LogoBox({
-  name,
-  image,
-  icon,
-  maskColor,
-}: {
-  name: string;
-  image?: string;
-  icon?: string;
-  maskColor?: string;
-}) {
+function LogoBox({ name, image, icon, maskColor }: LogoItem) {
   return (
-    <div className="flex h-[104px] w-[220px] shrink-0 items-center justify-center rounded bg-[#efefef]">
-      {/* ------------------------------------------------------ */}
-      {/* ICON LOGO                                               */}
-      {/* ------------------------------------------------------ */}
-
+    <div className="flex h-[104px] w-[267px] shrink-0 items-center justify-center rounded-[4px] bg-[#efefef]">
       {icon ? (
-        <div className="flex items-center gap-3">
+        /* AICA: icon + wordmark */
+        <div className="flex items-center gap-[12px]">
           <img
             src={icon}
             alt=""
             aria-hidden
-            className="h-8 w-auto"
-            style={{
-              filter: 'grayscale(1) brightness(0.4) contrast(1.4)',
-            }}
+            style={{ height: '30px', width: '36px', filter: `brightness(0) saturate(0) invert(40%)` }}
           />
-
-          <span className="font-display text-2xl font-bold text-[#3A3A3A]">
+          <span
+            className="font-bold leading-none"
+            style={{ fontSize: '40px', color: LOGO_COLOR, fontFamily: 'inherit' }}
+          >
             {name}
           </span>
         </div>
       ) : maskColor ? (
-        /* ------------------------------------------------------ */
-        /* MASK LOGO                                              */
-        /* ------------------------------------------------------ */
-
+        /* Vector / text logos — rendered as a flat colour through the alpha mask */
         <div
           role="img"
           aria-label={name}
-          className="h-16"
           style={{
             backgroundColor: maskColor,
+            height: '48px',
             width: '70%',
-
             WebkitMaskImage: `url(${image})`,
             maskImage: `url(${image})`,
-
             WebkitMaskRepeat: 'no-repeat',
             maskRepeat: 'no-repeat',
-
             WebkitMaskPosition: 'center',
             maskPosition: 'center',
-
             WebkitMaskSize: 'contain',
             maskSize: 'contain',
           }}
         />
       ) : (
-        /* ------------------------------------------------------ */
-        /* NORMAL IMAGE LOGO                                      */
-        /* ------------------------------------------------------ */
-
+        /* Raster logos — luminosity blend desaturates them against the #efefef tile */
         <img
           src={image}
           alt={name}
-          className="max-h-16 w-auto max-w-[70%] object-contain"
-          style={{
-            /*
-             * Convert the original logo to grayscale and make it
-             * significantly darker/bolder.
-             */
-            filter: 'grayscale(1) brightness(0.4) contrast(1.4)',
-          }}
+          className="mix-blend-luminosity max-h-[76px] w-auto max-w-[70%] object-contain"
         />
       )}
     </div>
   );
 }
 
-/* ------------------------------------------------------------ */
-/* MARQUEE ROW                                                  */
-/* ------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+/* MARQUEE ROW                                                          */
+/* ------------------------------------------------------------------ */
 
 function MarqueeRow({
   items,
   direction = 'forward',
 }: {
-  items: typeof rowA;
+  items: LogoItem[];
   direction?: 'forward' | 'reverse';
 }) {
-  /*
-   * Duplicate the logos so the marquee can loop continuously
-   * without an empty gap.
-   */
   const doubled = [...items, ...items];
 
   return (
@@ -197,58 +112,40 @@ function MarqueeRow({
       <div
         className={cn(
           'flex gap-1',
-          direction === 'forward'
-            ? 'animate-marquee'
-            : 'animate-marquee-reverse',
+          direction === 'forward' ? 'animate-marquee' : 'animate-marquee-reverse',
           'group-hover:[animation-play-state:paused]',
         )}
       >
         {doubled.map((item, i) => (
-          <LogoBox
-            key={`${item.name}-${i}`}
-            name={item.name}
-            image={item.image}
-            icon={item.icon}
-            maskColor={item.maskColor}
-          />
+          <LogoBox key={`${item.name}-${i}`} {...item} />
         ))}
       </div>
     </div>
   );
 }
 
-/* ------------------------------------------------------------ */
-/* LOGO STRIP                                                   */
-/* ------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+/* LOGO STRIP                                                           */
+/* ------------------------------------------------------------------ */
 
 export function LogoStrip() {
   return (
     <section
       aria-label="Clients we've worked with"
       data-nav-tone="light"
-      className="relative overflow-hidden bg-paper py-8"
+      className="relative overflow-hidden bg-paper py-6"
     >
-      {/* ------------------------------------------------------ */}
-      {/* LEFT FADE                                               */}
-      {/* ------------------------------------------------------ */}
-
+      {/* Left fade */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-paper to-transparent"
+        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[52px] bg-gradient-to-r from-paper to-transparent"
       />
 
-      {/* ------------------------------------------------------ */}
-      {/* RIGHT FADE                                              */}
-      {/* ------------------------------------------------------ */}
-
+      {/* Right fade */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-paper to-transparent"
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[52px] bg-gradient-to-l from-paper to-transparent"
       />
-
-      {/* ------------------------------------------------------ */}
-      {/* MARQUEE ROWS                                            */}
-      {/* ------------------------------------------------------ */}
 
       <div className="flex flex-col gap-1">
         <MarqueeRow items={rowA} direction="forward" />
@@ -257,4 +154,3 @@ export function LogoStrip() {
     </section>
   );
 }
-

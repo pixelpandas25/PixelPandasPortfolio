@@ -49,8 +49,10 @@ export const projectDetails: Record<string, ProjectDetail> = {
   },
   'biopole-branding': {
     images: [
-      ...['01', '02', '03', '04', '05'].map(f => imgs[`biopole-branding/${f}`]).filter(Boolean) as string[],
-      ['06'].map(f => imgs[`biopole-branding/${f}`]).filter(Boolean) as string[],
+      ...['00', '01', '02', '03', '04'].map(f => imgs[`biopole-branding/${f}`]).filter(Boolean) as string[],
+      ['06-01', '06-02', '06-03', '06-04', '06-05', '06-06', '06-07', '06-08', '06-09', '06-10', '06-11', '06-12', '06-13', '06-14']
+        .map(f => imgs[`biopole-branding/${f}`])
+        .filter(Boolean) as string[],
     ],
     collaboration: 'Biopole',
     problemDefinition: 'Designing marketing visuals for a sustainable brand that needed to communicate science-backed credibility alongside its eco-first mission.',
@@ -58,6 +60,21 @@ export const projectDetails: Record<string, ProjectDetail> = {
     services: ['Marketing Visuals', 'UX Design'],
     website: '',
   },
+
+  coreclubb: {
+    images: [
+      ...['01', '02', '03', '05', '07', '08', '09'].map(f => imgs[`coreclubb/${f}`]).filter(Boolean) as string[],
+      ['10-01', '10-02', '10-03', '10-04', '10-05', '10-06', '10-07', '10-08']
+        .map(f => imgs[`coreclubb/${f}`])
+        .filter(Boolean) as string[],
+    ],
+    collaboration: 'coreclubb',
+    problemDefinition: 'Building a full brand system and marketing visuals for a health & wellness startup that wanted to feel energetic, premium and community-first.',
+    industry: 'Health & Wellness',
+    services: ['Branding', 'Marketing Visuals'],
+    website: '',
+  },
+
   'biopole-platform': {
     images: ['01', '02', '03', '04', '05', '06'].map(f => imgs[`biopole-platform/${f}`]).filter(Boolean) as string[],
     collaboration: 'Biopole',
@@ -67,9 +84,17 @@ export const projectDetails: Record<string, ProjectDetail> = {
     website: '',
   },
   'tle-eliminator': {
-    images: ['01', '02', '03', '04', '05', '06', '07'].map(f => imgs[`tle-eliminator/${f}`]).filter(Boolean) as string[],
+    carouselCardSize: { w: 960, h: 521 },
+    images: [
+      ...['01', '02', '03', '04'].map(f => imgs[`tle-eliminator/${f}`]).filter(Boolean) as string[],
+      ['04.1-01', '04.1-02', '04.1-03', '04.1-04', '04.1-05', '04.1-06', '04.1-07']
+        .map(f => imgs[`tle-eliminator/${f}`]).filter(Boolean) as string[],
+      ...['05', '06'].map(f => imgs[`tle-eliminator/${f}`]).filter(Boolean) as string[],
+      ['07-01', '07-02', '07-03', '07-04', '07-05', '07-06', '07-07']
+        .map(f => imgs[`tle-eliminator/${f}`]).filter(Boolean) as string[],
+    ],
     collaboration: 'TLE Eliminator',
-    problemDefinition: 'Redesigning the UI/UX of a competitive programming platform to reduce cognitive load and help students focus on what matters — solving problems.',
+    problemDefinition: 'Redesigning the UI/UX of a competitive programming platform to reduce cognitive load and help students focus on what matters: solving problems.',
     industry: 'EdTech',
     services: ['UI/UX Design', 'Product Design'],
     website: '',
@@ -89,19 +114,6 @@ export const projectDetails: Record<string, ProjectDetail> = {
     industry: 'EdTech',
     services: ['Logo Design', 'Brand Identity'],
     website: 'https://takeuforward.org',
-  },
-  coreclubb: {
-    images: [
-      ...['01', '02', '03', '05', '07', '08', '09'].map(f => imgs[`coreclubb/${f}`]).filter(Boolean) as string[],
-      ['10-01', '10-02', '10-03', '10-04', '10-05', '10-06', '10-07', '10-08']
-        .map(f => imgs[`coreclubb/${f}`])
-        .filter(Boolean) as string[],
-    ],
-    collaboration: 'coreclubb',
-    problemDefinition: 'Building a full brand system and marketing visuals for a health & wellness startup that wanted to feel energetic, premium and community-first.',
-    industry: 'Health & Wellness',
-    services: ['Branding', 'Marketing Visuals'],
-    website: '',
   },
   supermission: {
     images: ['01', '02', '03', '04', '05', '06', '07'].map(f => imgs[`supermission/${f}`]).filter(Boolean) as string[],
@@ -137,8 +149,8 @@ export const projectDetails: Record<string, ProjectDetail> = {
   },
   'takeuforward-platform': {
     images: ['00', '01', '02', '03', '04', '05', '06', '08', '07'].map(f => imgs[`takeuforward-platform/${f}`]).filter(Boolean) as string[],
-    collaboration: 'takeUforward popularly known as TUF came to Pixel Pandas to reimagine the platform experience for their 18 lakh+ learners. Founded by Striver, TUF had already become the go-to destination for DSA, system design, and tech interview prep. The brief was to build a product experience worthy of that scale — one that could grow with them as they expanded across DSA, Core CS, aptitude, planning tools, and beyond.',
-    problemDefinition: 'The existing design had no room to breathe. Features, content, and navigation were packed into every surface — scattered information with no visual hierarchy and no consistent language across the platform. There was no design system, no shared components, and no framework to build on.',
+    collaboration: 'takeUforward popularly known as TUF came to Pixel Pandas to reimagine the platform experience for their 18 lakh+ learners. Founded by Striver, TUF had already become the go-to destination for DSA, system design, and tech interview prep. The brief was to build a product experience worthy of that scale, one that could grow with them as they expanded across DSA, Core CS, aptitude, planning tools, and beyond.',
+    problemDefinition: 'The existing design had no room to breathe. Features, content, and navigation were packed into every surface: scattered information with no visual hierarchy and no consistent language across the platform. There was no design system, no shared components, and no framework to build on.',
     industry: 'EdTech',
     services: ['UI/UX'],
     website: 'https://takeuforward.org',

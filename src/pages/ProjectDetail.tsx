@@ -29,7 +29,7 @@ export default function ProjectDetail() {
       />
       <ProjectHero project={project} heroImage={heroImage} />
       <ProjectInfo project={project} detail={detail} />
-      <ProjectGallery images={galleryImages} projectName={project.name} />
+      <ProjectGallery images={galleryImages} projectName={project.name} carouselCardSize={detail.carouselCardSize} />
       <ClosingCta />
     </>
   );

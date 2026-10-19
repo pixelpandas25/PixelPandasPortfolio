@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 interface ProjectGalleryProps {
   images: (string | string[])[];
   projectName: string;
+  carouselCardSize?: { w: number; h: number };
 }
 
 function CardImage({
@@ -39,10 +40,14 @@ function HorizontalScrollGroup({
   images,
   projectName,
   indexOffset,
+  cardW = 648,
+  cardH = 810,
 }: {
   images: string[];
   projectName: string;
   indexOffset: number;
+  cardW?: number;
+  cardH?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -50,13 +55,11 @@ function HorizontalScrollGroup({
     offset: ['start start', 'end end'],
   });
 
-  const CARD_W    = 648;
-  const CARD_H    = 810;
   const GAP       = 24;
   const steps     = images.length - 1;
-  const SECTION_H = CARD_H + 200;
+  const SECTION_H = cardH + 200;
 
-  const rawX = useTransform(scrollYProgress, [0, 1], [0, -steps * (CARD_W + GAP)]);
+  const rawX = useTransform(scrollYProgress, [0, 1], [0, -steps * (cardW + GAP)]);
   const x    = useSpring(rawX, { stiffness: 100, damping: 30, mass: 0.5 });
 
   const outerHeight = `calc(min(${SECTION_H}px, 95vh) + ${steps * 40}vh)`;
@@ -68,7 +71,7 @@ function HorizontalScrollGroup({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.05 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="sticky top-0 flex items-center overflow-hidden bg-paper py-[100px]"
+        className="sticky top-0 flex items-center overflow-hidden bg-paper py-[50px]"
         style={{ height: `min(${SECTION_H}px, 95vh)` }}
       >
         <motion.div
@@ -79,7 +82,7 @@ function HorizontalScrollGroup({
             <div
               key={src || i}
               className="flex-shrink-0 overflow-hidden rounded-[24px]"
-              style={{ width: `${CARD_W}px`, height: `${CARD_H}px` }}
+              style={{ width: `${cardW}px`, height: `${cardH}px` }}
             >
               <CardImage
                 src={src}
@@ -93,10 +96,9 @@ function HorizontalScrollGroup({
   );
 }
 
-export function ProjectGallery({ images, projectName }: ProjectGalleryProps) {
+export function ProjectGallery({ images, projectName, carouselCardSize }: ProjectGalleryProps) {
   if (images.length === 0) return null;
 
-  // Track whether we've rendered the first real image yet (the LCP candidate).
   let firstImageSeen = false;
 
   return (
@@ -110,6 +112,8 @@ export function ProjectGallery({ images, projectName }: ProjectGalleryProps) {
               images={item}
               projectName={projectName}
               indexOffset={index}
+              cardW={carouselCardSize?.w}
+              cardH={carouselCardSize?.h}
             />
           );
         }

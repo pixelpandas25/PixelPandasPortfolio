@@ -1,5 +1,5 @@
+import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/Button';
 import type { ProjectCategory } from '@/types';
 
 const tabs: Array<{ label: string; value: ProjectCategory | 'All' }> = [
@@ -21,12 +21,18 @@ export function WorkHeader({ active, onChange }: WorkHeaderProps) {
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
           <h1 className="text-display-4 font-bold text-[#121212]">Our Work</h1>
           <div className="flex items-center gap-3">
-            <Button href="mailto:hello@pixelpandas.in" variant="secondary">
-              Talk to Founder
-            </Button>
-            <Button href="mailto:hello@pixelpandas.in" variant="primary">
+            <a
+              href="mailto:hello@pixelpandas.in"
+              className="rounded-[100px] border border-[#e5e5e5] bg-[#f5f5f5] px-6 py-4 text-[15px] font-semibold leading-none text-[#121212] transition-colors duration-hover hover:bg-[#ebebeb]"
+            >
+              Send a mail
+            </a>
+            <Link
+              to="/contact#cal-embed"
+              className="rounded-[100px] bg-black px-6 py-4 text-[15px] font-semibold leading-none text-white transition-colors duration-hover hover:bg-[#1a1a1a]"
+            >
               Book a call
-            </Button>
+            </Link>
           </div>
         </div>
 

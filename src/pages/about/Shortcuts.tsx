@@ -6,7 +6,7 @@ const columns = [
   {
     title: 'Ship fast',
     image: shipFast,
-    text: 'Minimum turnaround. We move at the speed of your roadmap instead of fighting it — first drafts in days, not weeks.',
+    text: 'Minimum turnaround. We move at the speed of your roadmap instead of fighting it. First drafts in days, not weeks.',
   },
   {
     title: 'Kill the chaos',

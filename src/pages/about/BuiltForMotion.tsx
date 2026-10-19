@@ -16,7 +16,7 @@ const items = [
   {
     number: '03',
     image: motion03,
-    text: "You needed it yesterday. Minimum turnaround, maximum polish — that's the default here.",
+    text: "You needed it yesterday. Minimum turnaround, maximum polish. That's the default here.",
   },
 ];
 

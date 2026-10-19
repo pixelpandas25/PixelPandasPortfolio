@@ -57,7 +57,7 @@ export function Navbar() {
                     'relative px-2 py-1 text-nav font-medium transition-colors duration-hover',
                     onDark ? 'text-paper after:bg-paper' : 'text-ink-900 after:bg-ink-900',
                     'after:absolute after:inset-x-2 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:transition-transform after:duration-hover hover:after:scale-x-100',
-                    isActive && 'after:scale-x-100',
+                    isActive && !link.to.includes('#') && 'after:scale-x-100',
                   )
                 }
               >

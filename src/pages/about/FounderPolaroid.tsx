@@ -44,7 +44,7 @@ export function FounderPolaroid() {
         </div>
 
         <a
-          href="https://instagram.com/pixelpandas.in"
+          href="https://www.instagram.com/turrrbulent/"
           target="_blank"
           rel="noopener noreferrer"
           className="absolute left-[65.76%] top-[55.92%] flex items-center gap-[7px]"
@@ -55,7 +55,7 @@ export function FounderPolaroid() {
         </a>
 
         <a
-          href="https://linkedin.com/company/PixelPandas"
+          href="https://www.linkedin.com/in/varunyadav01/"
           target="_blank"
           rel="noopener noreferrer"
           className="absolute left-[24.32%] top-[89.13%] flex items-center gap-[7px]"
@@ -91,7 +91,7 @@ export function FounderPolaroid() {
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-8">
           <a
-            href="https://instagram.com/pixelpandas.in"
+            href="https://www.instagram.com/turrrbulent/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2"
@@ -102,7 +102,7 @@ export function FounderPolaroid() {
           </a>
 
           <a
-            href="https://linkedin.com/company/PixelPandas"
+            href="https://www.linkedin.com/in/varunyadav01/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2"

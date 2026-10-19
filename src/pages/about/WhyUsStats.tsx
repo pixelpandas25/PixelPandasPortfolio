@@ -116,7 +116,7 @@ export function WhyUsStats() {
       <div className="mx-auto flex max-w-site flex-col gap-14 lg:flex-row lg:gap-20">
         {/* Left column */}
         <div className="flex shrink-0 flex-col gap-14 lg:w-[340px]">
-          <h2 className="text-display-3 font-medium leading-[1.05] text-[#1d1d1f] lg:text-[80px]">
+          <h2 className="text-display-3 font-medium leading-[1.05] tracking-normal text-[#1d1d1f] lg:text-[80px]">
             Why
             <br />
             us
@@ -142,7 +142,10 @@ export function WhyUsStats() {
 
         {/* Right column */}
         <div className="flex flex-1 flex-col gap-12">
-          <p className="text-body-lg font-medium leading-[1.45] text-[#1d1d1f] sm:text-[26px]">
+          <p
+            className="text-body-lg font-medium leading-[1.45] text-[#1d1d1f] sm:text-[26px]"
+            style={{ textIndent: '3em' }}
+          >
             We design and build tailored digital experiences that not only
             elevate your brand visually but also deliver measurable results
             that support long-term business growth.
@@ -158,7 +161,7 @@ export function WhyUsStats() {
                 {/* Background number */}
                 <p
                   aria-hidden
-                  className="absolute -top-[28px] right-0 select-none text-[70px] font-bold tracking-[0.05em] text-white opacity-60 sm:-top-[38px] sm:text-[90px]"
+                  className="absolute -top-[28px] right-0 select-none text-[70px] font-bold tracking-[4.5px] text-white opacity-60 sm:-top-[38px] sm:text-[90px]"
                 >
                   {stat.value}
                 </p>
@@ -169,7 +172,7 @@ export function WhyUsStats() {
                 </p>
 
                 {/* Description */}
-                <p className="relative text-body text-[#515154]">
+                <p className="relative text-body leading-[1.5] text-[#515154]">
                   {stat.label}
                 </p>
               </div>

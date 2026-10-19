@@ -6,8 +6,6 @@ import { PremiumStatement } from './about/PremiumStatement';
 import { Shortcuts } from './about/Shortcuts';
 import { WhyUsStats } from './about/WhyUsStats';
 import { FounderPolaroid } from './about/FounderPolaroid';
-import { MeetTeam } from './about/MeetTeam';
-import { ExPandas } from './about/ExPandas';
 import { ContactBanner } from '@/components/sections/ContactBanner';
 
 export default function About() {
@@ -25,8 +23,6 @@ export default function About() {
       <Shortcuts />
       <WhyUsStats />
       <FounderPolaroid />
-      <MeetTeam />
-      <ExPandas />
       <ContactBanner />
     </>
   );

@@ -76,7 +76,7 @@ function CalWidget() {
 
 export function CalEmbed() {
   return (
-    <section data-nav-tone="light" className="bg-paper px-6 pb-20 sm:px-gutter-sm sm:pb-32">
+    <section id="cal-embed" data-nav-tone="light" className="bg-paper px-6 pb-20 sm:px-gutter-sm sm:pb-32">
       <div className="mx-auto max-w-content">
         <CalErrorBoundary>
           <CalWidget />

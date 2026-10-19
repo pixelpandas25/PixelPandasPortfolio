@@ -11,7 +11,7 @@ const Services = lazy(() => import('@/pages/Services'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
 function withSuspense(element: ReactNode) {
-  return <Suspense fallback={null}>{element}</Suspense>;
+  return <Suspense fallback={<div className="min-h-screen flex-1" />}>{element}</Suspense>;
 }
 
 export const router = createBrowserRouter([

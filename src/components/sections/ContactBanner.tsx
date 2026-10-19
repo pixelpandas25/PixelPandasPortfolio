@@ -1,5 +1,6 @@
 import { motion, type Variants } from 'framer-motion';
 import type { CSSProperties } from 'react';
+import { Link } from 'react-router-dom';
 import phoneImg from '@/assets/images/contact-phone.webp';
 import iconLinkedin from '@/assets/icons/social-linkedin-dark.webp';
 import iconInstagram from '@/assets/icons/social-instagram-dark.webp';
@@ -479,6 +480,32 @@ export function ContactBanner() {
             top: '87.37%',
           }}
         />
+
+        {/* -------------------------------------------------------------- */}
+        {/* CTAs                                                            */}
+        {/* -------------------------------------------------------------- */}
+
+        <motion.div
+          variants={simpleTextVariants}
+          className="absolute flex items-center gap-[12px]"
+          style={{
+            left: '73.82%',
+            top: '4.01%',
+          }}
+        >
+          <a
+            href="mailto:hello@pixelpandas.in"
+            className="rounded-[100px] border border-[#e5e5e5] bg-[#f5f5f5] px-6 py-4 text-[15px] font-semibold leading-none text-[#121212] transition-colors duration-hover hover:bg-[#ebebeb]"
+          >
+            Send a mail
+          </a>
+          <Link
+            to="/contact#cal-embed"
+            className="rounded-[100px] bg-black px-6 py-4 text-[15px] font-semibold leading-none text-white transition-colors duration-hover hover:bg-[#1a1a1a]"
+          >
+            Book a call
+          </Link>
+        </motion.div>
       </motion.div>
 
       {/* ================================================================== */}
@@ -561,6 +588,25 @@ export function ContactBanner() {
           variants={chipVariants}
           className="mt-16 flex flex-wrap items-center justify-center gap-10"
         />
+
+        {/* CTAs */}
+        <motion.div
+          variants={simpleTextVariants}
+          className="mt-8 flex flex-wrap items-center justify-center gap-3"
+        >
+          <a
+            href="mailto:hello@pixelpandas.in"
+            className="rounded-[100px] border border-[#e5e5e5] bg-[#f5f5f5] px-6 py-4 text-[15px] font-semibold leading-none text-[#121212] transition-colors duration-hover hover:bg-[#ebebeb]"
+          >
+            Send a mail
+          </a>
+          <Link
+            to="/contact#cal-embed"
+            className="rounded-[100px] bg-black px-6 py-4 text-[15px] font-semibold leading-none text-white transition-colors duration-hover hover:bg-[#1a1a1a]"
+          >
+            Book a call
+          </Link>
+        </motion.div>
       </motion.div>
     </section>
   );

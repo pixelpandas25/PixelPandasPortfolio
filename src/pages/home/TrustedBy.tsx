@@ -36,7 +36,7 @@ export function TrustedBy() {
           from various industries
         </>
       }
-      cta={{ label: 'Read Success Stories', href: '/work' }}
+      // cta={{ label: 'Read Success Stories', href: '/work' }}
       avatars={avatars}
     />
   );

@@ -19,7 +19,7 @@ function HeroImage({ className }: { className?: string }) {
         src={walkingFigure}
         alt=""
         aria-hidden
-        className="pointer-events-none absolute bottom-[8%] right-[-6%] w-[24%]"
+        className="pointer-events-none absolute bottom-[3%] right-0 w-[24%]"
       />
     </div>
   );
@@ -33,13 +33,13 @@ export function Hero() {
     >
       {/* Desktop: Figma 1440x760 composition, vertically centered in the viewport */}
       <div className="relative mx-auto hidden min-h-[100dvh] max-w-site items-center lg:flex">
-        <div className="relative w-full" style={{ aspectRatio: '1440 / 760' }}>
+        <div className="relative w-full" style={{ aspectRatio: '1440 / 760', containerType: 'inline-size' }}>
         <motion.h1
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="absolute text-display-1 font-bold leading-[0.9] tracking-tight text-ink-black"
-          style={{ left: '2.64%', top: '20.66%' }}
+          className="absolute font-bold leading-[0.9] text-ink-black"
+          style={{ left: '2.64%', top: '20.66%', fontSize: '9.722cqw', letterSpacing: '-0.06em' }}
         >
           Escape
         </motion.h1>
@@ -59,10 +59,15 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut', delay: 0.25 }}
           className="absolute text-right"
-          style={{ right: '4.9%', top: '73%' }}
+          style={{ right: '4.86%', top: '79.4%' }}
         >
-          <p className="text-display-5 font-semibold text-muted">from ordinary to</p>
-          <p className="-mt-1 text-display-2 font-bold leading-[0.95] tracking-tight text-ink-black">
+          <p
+            className="font-semibold text-muted"
+            style={{ fontSize: '3.333cqw', letterSpacing: '-0.02em', lineHeight: 1.1 }}
+          >
+            from ordinary to
+          </p>
+          <p className="font-bold leading-[0.95] text-ink-black" style={{ fontSize: '6.667cqw', letterSpacing: '-0.04em' }}>
             Extraordinary
           </p>
         </motion.div>
@@ -88,8 +93,10 @@ export function Hero() {
           transition={{ duration: 0.6, ease: 'easeOut', delay: 0.25 }}
           className="self-end text-right"
         >
-          <p className="text-body-lg font-semibold text-muted sm:text-display-5">from ordinary to</p>
-          <p className="-mt-1 text-display-2 font-bold leading-[0.95] tracking-tight text-ink-black">
+          <p className="font-semibold leading-none text-muted" style={{ fontSize: 'clamp(1.25rem, 4vw, 3rem)', letterSpacing: '-0.02em' }}>
+            from ordinary to
+          </p>
+          <p className="text-display-2 font-bold leading-[0.95] text-ink-black">
             Extraordinary
           </p>
         </motion.div>
