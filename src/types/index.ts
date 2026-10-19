@@ -34,6 +34,8 @@ export interface Project {
 export interface ProjectDetail {
   /** Regular strings are images. A nested string[] renders as a scroll-hijacked horizontal strip. */
   images: (string | string[])[];
+  /** Override card size for horizontal scroll carousels (defaults to 648×810 portrait). */
+  carouselCardSize?: { w: number; h: number };
   collaboration?: string;
   problemDefinition?: string;
   industry?: string;
@@ -48,6 +50,7 @@ export interface Testimonial {
   role: string;
   avatar?: string;
   image?: string;
+  video?: string;
   variant: 'text' | 'media';
 }
 

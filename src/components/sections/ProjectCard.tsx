@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import type { Project } from '@/types';
 import { cn } from '@/lib/utils';
 import arrowLink from '@/assets/icons/project-arrow-link.svg';
+import carouselArrow from '@/assets/icons/project-carousel-arrow.svg';
 
 const MotionLink = motion(Link);
 
@@ -32,11 +33,72 @@ export function ProjectCard({
   captionVariant = 'simple',
 }: ProjectCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const isGrid = captionVariant === 'simple';
 
+  /* ── Home carousel (meta) variant ─────────────────────────────────────── */
+  if (captionVariant === 'meta') {
+    return (
+      <MotionLink
+        to={project.href ?? `/work/${project.id}`}
+        className={cn('group relative overflow-clip bg-white pt-[12px] px-[12px] pb-[16px]', className)}
+      >
+        {/* Image */}
+        <div
+          className={cn('relative w-full overflow-hidden', aspectClassName)}
+          style={project.aspect ? { aspectRatio: project.aspect } : undefined}
+        >
+          {project.imageCrop ? (
+            <motion.img
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.4, ease: 'easeOut' }}
+              src={project.image}
+              alt={`${project.name} — ${project.categoryLabel}`}
+              loading="lazy"
+              className="absolute max-w-none"
+              style={project.imageCrop}
+            />
+          ) : (
+            <motion.img
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.4, ease: 'easeOut' }}
+              src={project.image}
+              alt={`${project.name} — ${project.categoryLabel}`}
+              loading="lazy"
+              className="size-full object-cover"
+            />
+          )}
+        </div>
+
+        {/* Card bottom: divider + meta + name */}
+        <div className="mt-[13px] flex flex-col gap-[16px]">
+          <div className="h-px w-full bg-[#e5e5e5]" />
+          <div className="flex flex-col gap-[12px] pr-[72px]">
+            <p className="whitespace-pre-wrap text-[12px] font-medium uppercase leading-normal tracking-[1.5px] text-[#888]">
+              {project.categoryLabel}
+            </p>
+            <p
+              className="text-[48px] font-bold leading-[1.1] tracking-[-0.02em] whitespace-nowrap"
+              style={{ color: project.brandColor }}
+            >
+              {project.name}
+            </p>
+          </div>
+        </div>
+
+        {/* Arrow — absolute bottom-right */}
+        <img
+          src={carouselArrow}
+          alt=""
+          aria-hidden
+          className="absolute bottom-[16px] right-[12px] size-[60px]"
+        />
+      </MotionLink>
+    );
+  }
+
+  /* ── Work grid (simple) variant ───────────────────────────────────────── */
   return (
     <MotionLink
-      to={`/work/${project.id}`}
+      to={project.href ?? `/work/${project.id}`}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       whileHover="hover"
@@ -48,7 +110,7 @@ export function ProjectCard({
       >
         {project.imageCrop ? (
           <motion.img
-            variants={isGrid ? undefined : { hover: { scale: 1.05 } }}
+            variants={{ hover: { scale: 1.05 } }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
             src={project.image}
             alt={`${project.name} — ${project.categoryLabel}`}
@@ -58,7 +120,7 @@ export function ProjectCard({
           />
         ) : (
           <motion.img
-            variants={isGrid ? undefined : { hover: { scale: 1.05 } }}
+            variants={{ hover: { scale: 1.05 } }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
             src={project.image}
             alt={`${project.name} — ${project.categoryLabel}`}
@@ -70,29 +132,22 @@ export function ProjectCard({
 
       <div className="flex w-full items-center justify-between gap-4">
         <div className="flex flex-col items-start gap-[11px]">
-          {captionVariant === 'meta' && (
-            <p className="text-caption font-medium uppercase tracking-[0.08em] text-muted-2">
-              {project.categoryLabel}
-            </p>
-          )}
           <p
             className="text-display-5 font-bold leading-[1.1] tracking-[-0.02em] transition-colors duration-300 ease-out"
-            style={{ color: isGrid ? (isHovered ? project.brandColor : GRID_TITLE_GRAY) : project.brandColor }}
+            style={{ color: isHovered ? project.brandColor : GRID_TITLE_GRAY }}
           >
             {project.name}
           </p>
-          {captionVariant === 'simple' && (
-            <p
-              className="text-nav font-medium tracking-[-0.02em] transition-colors duration-300 ease-out"
-              style={{ color: isHovered ? GRID_META_HOVER : GRID_META_GRAY }}
-            >
-              {project.categoryLabel}
-            </p>
-          )}
+          <p
+            className="text-nav font-medium tracking-[-0.02em] transition-colors duration-300 ease-out"
+            style={{ color: isHovered ? GRID_META_HOVER : GRID_META_GRAY }}
+          >
+            {project.categoryLabel}
+          </p>
         </div>
 
         <motion.span
-          variants={isGrid ? undefined : { hover: { rotate: -45, backgroundColor: '#111111' } }}
+          variants={{ hover: { rotate: -45, backgroundColor: '#111111' } }}
           transition={{ duration: 0.25, ease: 'easeOut' }}
           className="flex size-[60px] shrink-0 items-center justify-center rounded-full bg-surface-light"
         >

@@ -1,191 +1,152 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import servicesAvatar   from '@/assets/images/services-avatar.webp';
+import folderOutline    from '@/assets/icons/services-folder-outline.svg';
+import folderMatte      from '@/assets/images/services-folder-matte.webp';
+import folderShapeMask  from '@/assets/images/services-folder-shape-mask.webp';
+import pandaIcon        from '@/assets/icons/services-panda-icon.svg';
 
-import servicesAvatar from '@/assets/images/services-avatar.webp';
-import folderOutline from '@/assets/icons/services-folder-outline.svg';
-import folderMatte from '@/assets/images/services-folder-matte.webp';
-import folderShapeMask from '@/assets/images/services-folder-shape-mask.webp';
-import pandaIcon from '@/assets/icons/services-panda-icon.svg';
-
-import iconDev from '@/assets/icons/svc-icon-dev.svg';
 import iconSocial from '@/assets/icons/svc-icon-social.svg';
-import iconBrand from '@/assets/icons/svc-icon-brand.svg';
-import iconUiux from '@/assets/icons/svc-icon-uiux.svg';
+import iconUiux   from '@/assets/icons/svc-icon-uiux.svg';
+import iconBrand  from '@/assets/icons/svc-icon-brand.svg';
+import iconDev    from '@/assets/icons/svc-icon-dev.svg';
 
+/* ── Types ──────────────────────────────────────────────────────────────── */
 interface Service {
   id: string;
   title: string;
   description: string;
   tag: string;
   icon: string;
-  slot: {
-    x: number;
-    y: number;
-    rotate: number;
-  };
+  /** Deep-link into the /services page for this specific service */
+  href: string;
+  /** Absolute position in the 1320 × 500 stage when folder is CLOSED */
+  fan: { left: number; top: number; rotate: number; zIndex: number };
 }
 
+/* ── Service data — order matches left-to-right open row ────────────────── */
 const services: Service[] = [
-  {
-    id: 'dev',
-    title: 'Web & App Design & Development',
-    description:
-      'Design-led development for fast, responsive & modern solutions.',
-    tag: '.dev',
-    icon: iconDev,
-    slot: {
-      x: 4,
-      y: -8,
-      rotate: 15.27,
-    },
-  },
   {
     id: 'social',
     title: 'Social Media Creatives',
     description:
-      'Scroll-stopping creatives that engage and convert.',
+      'We create scroll-stopping visuals that capture attention, spark engagement and make your brand stand out.',
     tag: '.social',
     icon: iconSocial,
-    slot: {
-      x: -32,
-      y: 6,
-      rotate: -20,
-    },
-  },
-  {
-    id: 'brand',
-    title: 'Brand Design',
-    description:
-      'Build a strong identity that represents your brand, perfectly.',
-    tag: '.brand',
-    icon: iconBrand,
-    slot: {
-      x: 28,
-      y: 10,
-      rotate: 20,
-    },
+    href: '/services#visual-creatives',
+    /*
+     * Figma folder-relative pos: left = −88.61, top = 5.86
+     * Stage: FOLDER_LEFT(430.87) − 88.61 = 342.26, FOLDER_TOP(22.39) + 5.86 = 28.25
+     * Painted last in Figma → highest z-index in fan
+     */
+    fan: { left: 342, top: 28, rotate: -11.17, zIndex: 4 },
   },
   {
     id: 'design',
     title: 'UI/UX Design',
     description:
-      'User-centered designs that create seamless experiences.',
+      'We turn complex ideas into intuitive digital experiences that feel effortless to use and built to convert.',
     tag: '.design',
     icon: iconUiux,
-    slot: {
-      x: -6,
-      y: 14,
-      rotate: -10,
-    },
+    href: '/services#ui-ux-design',
+    /*
+     * Figma: left = −68.02, top = −60.47
+     * Stage: 362.85, −38.08
+     */
+    fan: { left: 363, top: -38, rotate: 9.13, zIndex: 1 },
+  },
+  {
+    id: 'brand',
+    title: 'Brand Design',
+    description:
+      'We build distinctive brand identities that tell your story, set you apart and stay memorable.',
+    tag: '.brand',
+    icon: iconBrand,
+    href: '/services#brand-design',
+    /*
+     * Figma: left = 186.16, top = −8.07
+     * Stage: 617.03, 14.32
+     */
+    fan: { left: 617, top: 14, rotate: 19.6, zIndex: 3 },
+  },
+  {
+    id: 'dev',
+    title: 'Website Development',
+    description:
+      'We build fast, responsive websites that look great, work seamlessly and grow with you.',
+    tag: '.dev',
+    icon: iconDev,
+    href: '/services#website-dev',
+    /*
+     * Figma: left = 125, top = −88
+     * Stage: 555.87, −65.61
+     */
+    fan: { left: 556, top: -66, rotate: 0, zIndex: 2 },
   },
 ];
 
+/* ── Constants ──────────────────────────────────────────────────────────── */
 const AUTO_ADVANCE_MS = 4000;
+const CARD_SHADOW     = '0px 8.54px 8.54px 6.405px rgba(3, 3, 3, 0.16)';
+const CARD_TRANSITION = { type: 'spring' as const, stiffness: 170, damping: 24 };
 
-const CARD_SHADOW =
-  '0px 8.54px 8.54px 6.405px rgba(68,68,68,0.16)';
-
-const CARD_TRANSITION = {
-  type: 'spring' as const,
-  stiffness: 170,
-  damping: 24,
-};
-
-/*
- * Open/close sequencing. FOLDER_FADE_S is how long the cover
- * itself takes to fade. The fan cards are ALWAYS opacity: 1 — in
- * the closed pose they sit stacked and rotated behind the folder,
- * so only their corners peek out past the folder's silhouette
- * (through the frosted top sliver and past the matte's rounded
- * edges), exactly like the fanned-photo reference. Opening: cards
- * wait until the cover is well past halfway faded before they
- * start moving into the row layout. Closing: the position reset
- * to the stacked pose is delayed until the cover has visually
- * finished closing, so nothing is seen snapping into place through
- * the still-translucent cover.
- */
-const FOLDER_FADE_S = 0.35;
-const CARD_OPEN_DELAY_S = 0.18;
+const FOLDER_FADE_S              = 0.35;
+const CARD_OPEN_DELAY_S          = 0.18;
 const CARD_CLOSE_POSITION_DELAY_S = 0.3;
 
+/* Stage — matches Figma proportions (1320 px wide so 4 × 313 + 3 × 20 fits) */
+const STAGE_W = 1320;
+const STAGE_H = 500;
+
+const FOLDER_W    = 458.258;
+const FOLDER_H    = 455.224;
+const FOLDER_LEFT = (STAGE_W - FOLDER_W) / 2;  // 430.87
+const FOLDER_TOP  = (STAGE_H - FOLDER_H) / 2;  // 22.39
+
+/* Row (open) layout */
+const ROW_CARD_W     = 313;
+const ROW_CARD_H     = 365;
+const ROW_GAP        = 20;
+const ROW_LEFT_START = (STAGE_W - (ROW_CARD_W * 4 + ROW_GAP * 3)) / 2; // 4
 /*
- * Figma reference canvas.
+ * Figma places the card row 11.27 px ABOVE the folder top (top: -11.27 relative to folder).
+ * In stage coords: FOLDER_TOP(22.39) − 11.27 = 11.12
  */
-const STAGE_W = 980;
-const STAGE_H = 460;
+const ROW_TOP = FOLDER_TOP - 11.27; // 11.12
 
-const FOLDER_W = 458.258;
-const FOLDER_H = 455.224;
-
-const FOLDER_LEFT = (STAGE_W - FOLDER_W) / 2;
-const FOLDER_TOP = (STAGE_H - FOLDER_H) / 2;
-
-/*
- * True (unrotated) card size behind the folder, derived from the
- * Figma node's rotated bounding box (638:4816) — every fan card
- * shares this footprint, only position/rotation differ per slot.
- */
-const FAN_CARD_W = 420;
-const FAN_CARD_H = 395;
-
-const FAN_LEFT = FOLDER_LEFT + (FOLDER_W - FAN_CARD_W) / 2;
-const FAN_TOP =
-  FOLDER_TOP + (FOLDER_H - FAN_CARD_H) / 2 - 80;
-
-const ROW_GAP = 24;
-const ROW_CARD_W = (STAGE_W - ROW_GAP * 3) / 4;
-const ROW_CARD_H = 420;
-const ROW_TOP = (STAGE_H - ROW_CARD_H) / 2;
-
+/* ── Canvas scaler ──────────────────────────────────────────────────────── */
 function useCanvasScale(designWidth: number) {
   const ref = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
 
   useEffect(() => {
     const el = ref.current;
-
     if (!el) return;
-
     const observer = new ResizeObserver((entries) => {
-      const width =
-        entries[0]?.contentRect.width ?? designWidth;
-
-      setScale(Math.min(1, width / designWidth));
+      const w = entries[0]?.contentRect.width ?? designWidth;
+      setScale(Math.min(1, w / designWidth));
     });
-
     observer.observe(el);
-
     return () => observer.disconnect();
   }, [designWidth]);
 
   return [ref, scale] as const;
 }
 
-function CardContent({
-  service,
-}: {
-  service: Service;
-}) {
+/* ── Card content ───────────────────────────────────────────────────────── */
+function CardContent({ service }: { service: Service }) {
   return (
-    <div className="flex size-full flex-col items-start justify-between p-[30px] text-left">
-      {/* Top content */}
-      <div className="flex flex-col items-start gap-6">
-        {/* Icon */}
-        <div className="flex size-11 items-center justify-center rounded-lg bg-[#1a62ec]/5">
-          <img
-            src={service.icon}
-            alt=""
-            className="size-6"
-          />
-        </div>
+    <div className="flex size-full flex-col items-start justify-between p-[24px]">
+      <div className="flex flex-col gap-[12px]">
+        {/* Icon — full 72 × 72, no background container */}
+        <img src={service.icon} alt="" aria-hidden className="size-[72px] shrink-0" />
 
         {/* Text */}
-        <div className="flex flex-col items-start gap-2">
+        <div className="flex flex-col gap-[8px]">
           <p className="text-[16px] font-bold leading-[1.3] text-[#0f172a]">
             {service.title}
           </p>
-
           <p className="text-[12px] leading-[1.5] text-[#64748b]">
             {service.description}
           </p>
@@ -193,101 +154,69 @@ function CardContent({
       </div>
 
       {/* Tag */}
-      <span className="rounded bg-[#1a62ec]/[0.04] px-2 py-1 text-[10px] font-semibold text-[#1a62ec]">
+      <span className="rounded-[4px] bg-[rgba(26,98,236,0.04)] px-[8px] py-[4px] text-[10px] font-semibold leading-normal text-[#1a62ec]">
         {service.tag}
       </span>
     </div>
   );
 }
 
+/* ── Section ────────────────────────────────────────────────────────────── */
 export function DesignServices() {
-  const [active, setActive] = useState(0);
+  const [active,  setActive]  = useState(0);
   const [hovered, setHovered] = useState(false);
+  const prefersReducedMotion  = useReducedMotion();
+  const [canvasRef, scale]    = useCanvasScale(STAGE_W);
+  const navigate              = useNavigate();
 
-  const prefersReducedMotion = useReducedMotion();
-
-  const [canvasRef, scale] =
-    useCanvasScale(STAGE_W);
-
-  /*
-   * Auto rotate through the service cards.
-   * Pauses while the user is hovering over the
-   * desktop composition. Depends on `active` so that
-   * a manual click (card or dot) restarts the countdown
-   * instead of being overridden moments later by a
-   * stale auto-advance tick.
-   */
+  /* Auto-advance indicator dots (pauses on hover) */
   useEffect(() => {
-    if (hovered || prefersReducedMotion) {
-      return;
-    }
-
+    if (hovered || prefersReducedMotion) return;
     const id = setInterval(() => {
       setActive((i) => (i + 1) % services.length);
     }, AUTO_ADVANCE_MS);
-
     return () => clearInterval(id);
   }, [active, hovered, prefersReducedMotion]);
 
   return (
     <section
       data-nav-tone="light"
-      className="relative overflow-hidden bg-paper px-6 py-16 sm:min-h-[760px] sm:px-gutter-sm sm:pb-12 sm:pt-16"
+      className="relative overflow-hidden bg-paper px-6 pb-12 pt-16 sm:min-h-[760px] sm:px-gutter-sm"
     >
       <div className="mx-auto flex w-full max-w-content flex-col items-center">
 
-        {/* =========================================================
-            Heading
-        ========================================================== */}
-        <div className="relative z-30 flex flex-col items-center gap-1 text-center">
+        {/* ── Heading ────────────────────────────────────────────────────── */}
+        <div className="relative z-30 flex flex-col items-center gap-[4px] text-center">
           <h2 className="text-display-4 font-bold leading-[1.35]">
-            <span className="text-[#7A7A7A]">
-              Our
-            </span>{' '}
-
-            <span className="text-ink-black">
-              Design Services
-            </span>
+            <span className="text-[#d9d9d9]">Our</span>
+            {' '}
+            <span className="text-[#0f172a]">Design Services</span>
           </h2>
-
-          <p className="max-w-2xl text-body text-[#64748b] sm:max-w-[658px]">
-            From startups finding their voice to established
-            brands leveling up — we bring structure, strategy,
-            and stunning design to everything we touch.
+          <p className="max-w-[658px] text-[16px] leading-[1.6] text-[#64748b]">
+            From startups finding their voice to established brands leveling
+            up &mdash; we bring structure, strategy, and stunning design to
+            everything we touch.
           </p>
         </div>
 
-        {/* =========================================================
-            Mobile
-        ========================================================== */}
+        {/* ── Mobile: stacked cards ──────────────────────────────────────── */}
         <div className="mt-10 flex w-full flex-col gap-5 sm:hidden">
           {services.map((service) => (
             <div
               key={service.id}
               className="w-full overflow-hidden rounded-[22px] bg-white"
-              style={{
-                boxShadow: CARD_SHADOW,
-              }}
+              style={{ boxShadow: CARD_SHADOW }}
             >
               <CardContent service={service} />
             </div>
           ))}
         </div>
 
-        {/* =========================================================
-            Desktop / Tablet
-        ========================================================== */}
+        {/* ── Desktop: folder composition ────────────────────────────────── */}
         <div
           ref={canvasRef}
           className="relative z-10 hidden w-full overflow-visible sm:block"
-          style={{
-            /*
-             * Matches the 51px gap between the paragraph and the
-             * folder in the Figma composition (638:4816).
-             */
-            height: STAGE_H * scale,
-            marginTop: 51,
-          }}
+          style={{ height: STAGE_H * scale, marginTop: 51 }}
         >
           <div
             className="relative mx-auto"
@@ -303,9 +232,7 @@ export function DesignServices() {
             onBlur={() => setHovered(false)}
           >
 
-            {/* =====================================================
-                Background folder outline
-            ====================================================== */}
+            {/* ── Folder outline (visible when closed) ─────────────────── */}
             <motion.img
               src={folderOutline}
               alt=""
@@ -318,18 +245,14 @@ export function DesignServices() {
                 height: FOLDER_H,
                 zIndex: 0,
               }}
-              animate={{
-                opacity: hovered ? 0 : 1,
-              }}
+              animate={{ opacity: hovered ? 0 : 1 }}
               transition={{
                 duration: prefersReducedMotion ? 0 : FOLDER_FADE_S,
                 ease: 'easeInOut',
               }}
             />
 
-            {/* =====================================================
-                Folder Front / Matte Shade
-            ====================================================== */}
+            {/* ── Folder front / matte cover ────────────────────────────── */}
             <motion.div
               className="pointer-events-none absolute overflow-hidden"
               style={{
@@ -340,43 +263,27 @@ export function DesignServices() {
                 zIndex: 25,
                 borderRadius: '42px',
               }}
-              animate={{
-                opacity: hovered ? 0 : 1,
-              }}
+              animate={{ opacity: hovered ? 0 : 1 }}
               transition={{
                 duration: prefersReducedMotion ? 0 : FOLDER_FADE_S,
                 ease: 'easeInOut',
               }}
             >
-              {/* ---------------------------------------------------
-                  Matte folder surface: a backdrop-blur pass so the
-                  fanned cards read as soft, frosted shapes through
-                  the top of the folder, a low-opacity pass of the
-                  real Figma pixels for grain/texture, and a
-                  hand-tuned matte gradient on top (near-transparent
-                  at the very top so blurred card color bleeds
-                  through, deepening smoothly to solid matte black
-                  by the bottom — no hard bands, no glossy sheen).
-                  All three share one mask so they're clipped to the
-                  folder-tab silhouette.
-              ---------------------------------------------------- */}
+              {/* Frosted matte body (backdrop-blur + gradient) */}
               <div
                 aria-hidden
                 className="absolute left-0 w-full overflow-hidden"
                 style={{
                   top: 49.817,
                   height: 405.407,
-
                   WebkitMaskImage: `url(${folderShapeMask})`,
                   maskImage: `url(${folderShapeMask})`,
                   WebkitMaskSize: '100% 100%',
                   maskSize: '100% 100%',
                   WebkitMaskRepeat: 'no-repeat',
                   maskRepeat: 'no-repeat',
-
                   backdropFilter: 'blur(8px)',
                   WebkitBackdropFilter: 'blur(8px)',
-
                   boxShadow:
                     'inset 0 1px 3px rgba(255,255,255,0.14), inset 0 -28px 46px rgba(0,0,0,0.45)',
                 }}
@@ -387,7 +294,6 @@ export function DesignServices() {
                   className="absolute inset-0 size-full select-none object-cover"
                   style={{ opacity: 0.2 }}
                 />
-
                 <div
                   className="absolute inset-0"
                   style={{
@@ -397,9 +303,7 @@ export function DesignServices() {
                 />
               </div>
 
-              {/* =================================================
-                  Panda
-              ================================================== */}
+              {/* Panda avatar ring */}
               <div
                 className="absolute"
                 style={{
@@ -415,53 +319,37 @@ export function DesignServices() {
                   aria-hidden
                   className="absolute inset-0 size-full opacity-90"
                 />
-
                 <img
                   src={servicesAvatar}
                   alt="PixelPandas"
                   className="absolute size-[97.717px] rounded-full object-cover"
-                  style={{
-                    left: 4.367,
-                    top: 4.718,
-                  }}
+                  style={{ left: 4.367, top: 4.718 }}
                 />
               </div>
 
-              {/* =================================================
-                  Folder Footer
-              ================================================== */}
+              {/* Folder footer: label + dot indicators */}
               <div
                 className="absolute flex items-center justify-between"
-                style={{
-                  left: 39,
-                  top: 399,
-                  width: 383,
-                }}
+                style={{ left: 39, top: 399, width: 383 }}
               >
-                <span className="text-[15px] font-semibold text-white">
+                <span className="text-[15px] font-semibold leading-normal text-white">
                   What we do?
                 </span>
 
-                <div className="flex items-center gap-[12px] rounded-pill bg-black/20 px-[10px] py-[8px]">
-                  {services.map((service, i) => (
+                <div className="flex items-center gap-[12px] rounded-full bg-black/20 px-[10px] py-[8px]">
+                  {services.map((svc, i) => (
                     <button
-                      key={service.id}
+                      key={svc.id}
                       type="button"
-                      aria-label={`Show ${service.title}`}
+                      aria-label={`Show ${svc.title}`}
                       aria-current={i === active}
                       onClick={() => setActive(i)}
                       tabIndex={hovered ? -1 : 0}
-                      className={cn(
-                        'flex size-[12px] items-center justify-center',
-                        !hovered && 'pointer-events-auto',
-                      )}
+                      className="flex size-[12px] items-center justify-center"
                     >
                       <span
                         className="block size-[6px] rounded-full bg-white transition-opacity duration-300"
-                        style={{
-                          opacity:
-                            i === active ? 1 : 0.4,
-                        }}
+                        style={{ opacity: i === active ? 1 : 0.4 }}
                       />
                     </button>
                   ))}
@@ -469,114 +357,65 @@ export function DesignServices() {
               </div>
             </motion.div>
 
-            {/* =====================================================
-                Service Cards
-            ====================================================== */}
+            {/* ── Service cards — fanned (closed) ↔ row (open) ─────────── */}
             {services.map((service, i) => {
-              const isActive = i === active;
-
-              /*
-               * Cards are always opacity: 1 — visibility comes from
-               * the z-index stack instead (cards sit above the
-               * folder outline but below the opaque/blurred folder
-               * front). In the closed pose they're stacked and
-               * rotated behind the folder, so only slivers of each
-               * card peek out past the folder's silhouette, just
-               * like the fanned reference. Opening: position waits
-               * until the cover has had time to visibly fade.
-               * Closing: position waits to reset until the cover
-               * has visually finished closing, so nothing is seen
-               * snapping back into the stack through the
-               * still-translucent cover.
-               */
               const positionTransition = prefersReducedMotion
                 ? { duration: 0 }
                 : hovered
                   ? { ...CARD_TRANSITION, delay: CARD_OPEN_DELAY_S }
-                  : {
-                      ...CARD_TRANSITION,
-                      delay: CARD_CLOSE_POSITION_DELAY_S,
-                    };
+                  : { ...CARD_TRANSITION, delay: CARD_CLOSE_POSITION_DELAY_S };
 
               return (
                 <motion.button
                   key={service.id}
                   type="button"
-                  onClick={() => setActive(i)}
+                  onClick={() => {
+                    setActive(i);
+                    if (hovered) navigate(service.href);
+                  }}
                   initial={false}
                   animate={
                     hovered
                       ? {
-                          /*
-                           * Expanded four-card row. Cards only
-                           * start moving here once the folder cover
-                           * has had time to visibly fade (see
-                           * CARD_OPEN_DELAY_S below).
-                           */
-                          left:
-                            i *
-                            (ROW_CARD_W +
-                              ROW_GAP),
-                          top: ROW_TOP,
-                          width: ROW_CARD_W,
-                          height: ROW_CARD_H,
-                          x: 0,
-                          y: 0,
-                          rotate: 0,
+                          left:    ROW_LEFT_START + i * (ROW_CARD_W + ROW_GAP),
+                          top:     ROW_TOP,
+                          width:   ROW_CARD_W,
+                          height:  ROW_CARD_H,
+                          rotate:  0,
                           opacity: 1,
                         }
                       : {
-                          /*
-                           * Hidden, stacked pose behind the closed
-                           * folder. Opacity reaches 0 almost
-                           * immediately on close so nothing is seen
-                           * moving through the still-translucent
-                           * cover; the position reset is delayed
-                           * until the cover has visually finished
-                           * closing (CARD_CLOSE_POSITION_DELAY_S).
-                           */
-                          left: FAN_LEFT,
-                          top: FAN_TOP,
-                          width: FAN_CARD_W,
-                          height: FAN_CARD_H,
-
-                          x: service.slot.x,
-                          y: service.slot.y,
-                          rotate: service.slot.rotate,
+                          left:    service.fan.left,
+                          top:     service.fan.top,
+                          width:   ROW_CARD_W,
+                          height:  ROW_CARD_H,
+                          rotate:  service.fan.rotate,
                           opacity: 1,
                         }
                   }
-                  transition={{
-                    default: positionTransition,
-                  }}
+                  transition={{ default: positionTransition }}
                   style={{
-                    position: 'absolute',
-                    zIndex: i + 1,
-                    boxShadow: CARD_SHADOW,
-                    borderRadius: 20,
-
-                    /*
-                     * Fully inert while stacked behind the closed
-                     * folder — visible as a peeking sliver, but not
-                     * clickable/focusable until the folder opens.
-                     */
+                    position:      'absolute',
+                    borderRadius:  22,
+                    boxShadow:     CARD_SHADOW,
                     pointerEvents: hovered ? 'auto' : 'none',
+                    zIndex:        hovered ? i + 1 : service.fan.zIndex,
+                    background:    service.id === 'dev' ? 'rgba(255,255,255,0.8)' : '#ffffff',
                   }}
-                  className={cn(
-                    'overflow-hidden text-left',
-                    service.id === 'dev' ? 'bg-white/80' : 'bg-white',
-                  )}
+                  className="overflow-hidden text-left"
                   tabIndex={hovered ? 0 : -1}
                   aria-hidden={!hovered}
-                  aria-current={isActive}
+                  aria-current={i === active}
                   aria-label={`Show ${service.title}`}
                 >
                   <CardContent service={service} />
                 </motion.button>
               );
             })}
+
           </div>
         </div>
+
       </div>
     </section>
   );

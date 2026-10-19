@@ -1,58 +1,70 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Seo } from '@/components/Seo';
-import { ClosingCta } from './work/ClosingCta';
 import { ContactBanner } from '@/components/sections/ContactBanner';
 import { useInView } from '@/hooks/useInView';
 import arrowUpRight from '@/assets/icons/tag-arrow-up-right.svg';
 
-import brandImg from '@/assets/images/services/01.avif';
-import uiuxImg from '@/assets/images/services/02.avif';
+import brandImg  from '@/assets/images/services/01.avif';
+import uiuxImg   from '@/assets/images/services/02.avif';
 import visualImg from '@/assets/images/services/03.avif';
-import webImg from '@/assets/images/services/04.avif'
+import webImg    from '@/assets/images/services/04.avif';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 interface Service {
   title: string;
+  /** Anchor id — used by the homepage cards to deep-link here */
+  sectionId: string;
   tags: string[];
   description: string;
   image: string;
   imageLeft: boolean;
+  /** ?category= value on /work that shows relevant projects for this service */
+  workCategory: string;
 }
 
 const services: Service[] = [
   {
     title: 'Brand Design',
+    sectionId: 'brand-design',
     tags: ['Logo Design', 'Brand Strategy', 'Visual Language', 'Brand Book & Guideline'],
     description:
       'We build distinctive brand identities that make your business instantly recognisable. From strategy and visual language to logos and brand guidelines, we create a system that stays consistent across every touchpoint.',
     image: brandImg,
     imageLeft: true,
+    workCategory: 'Branding',
   },
   {
     title: 'UI/UX Design',
+    sectionId: 'ui-ux-design',
     tags: ['Web & App Design', 'Design System', 'Consumer UX', 'Enterprise UX', 'UX Audit'],
     description:
       'We turn complex ideas into simple, intuitive digital experiences. From product strategy and user flows to polished interfaces and scalable design systems, we design products that are easy to use and built to grow.',
     image: uiuxImg,
     imageLeft: false,
+    workCategory: 'UI/UX',
   },
   {
     title: 'Visual Creatives',
+    sectionId: 'visual-creatives',
     tags: ['Packaging', 'Social Media', 'Print Design', 'Campaign Design', 'Marketing Creatives'],
     description:
       'We create visuals that make people stop, notice, and remember. From social campaigns and marketing creatives to packaging and print, we bring your brand to life across every visual touchpoint.',
     image: visualImg,
     imageLeft: true,
+    workCategory: 'Branding',
   },
   {
     title: 'Website Design & Development',
+    sectionId: 'website-dev',
     tags: ['Website Design', 'Web Development'],
     description:
       'We design and build websites that look great and work hard. From high-converting landing pages to complete brand websites, we combine strategy, design, and development to create digital experiences that drive results.',
     image: webImg,
     imageLeft: false,
+    workCategory: 'Website Designs',
   },
 ];
 
@@ -73,7 +85,7 @@ const approachCards = [
     number: '03',
     title: 'Design to build',
     description:
-      'Every pixel has a purpose. We design with real code constraints in mind, creating handoffs that developers can implement without losing the design intent.',
+      "Every pixel has a purpose. We design with real code constraints in mind — creating handoffs developers can implement without losing the design intent.",
   },
   {
     number: '04',
@@ -83,9 +95,30 @@ const approachCards = [
   },
 ];
 
-// ---------------------------------------------------------------------------
-// Service row — each element animates in sequence off a single InView trigger
-// ---------------------------------------------------------------------------
+/* ── Shared CTA pair ────────────────────────────────────────────────────── */
+function ServiceCtas({ workCategory }: { workCategory: string }) {
+  return (
+    <div className="flex flex-wrap items-center gap-[18px]">
+      {/* Contact Us → jumps straight to the booking calendar on /contact */}
+      <Link
+        to="/contact#cal-embed"
+        className="inline-flex items-center rounded-[150px] bg-black px-[18px] py-[12px] text-[16px] font-semibold text-white"
+      >
+        Contact Us
+      </Link>
+      {/* Explore Portfolio → /work pre-filtered to the relevant category */}
+      <Link
+        to={`/work?category=${encodeURIComponent(workCategory)}`}
+        className="inline-flex items-center rounded-[150px] border-[1.5px] border-[#e5e5e5] bg-[#f5f5f5] px-[18px] py-[12px] text-[16px] font-semibold text-[#121212]"
+      >
+        Explore Portfolio
+        <img src={arrowUpRight} alt="" aria-hidden className="ml-[3px] size-[21px] shrink-0" />
+      </Link>
+    </div>
+  );
+}
+
+/* ── Service row ────────────────────────────────────────────────────────── */
 function ServiceRow({ service }: { service: Service }) {
   const [rowRef, isInView] = useInView<HTMLDivElement>({ threshold: 0.15 });
 
@@ -94,7 +127,7 @@ function ServiceRow({ service }: { service: Service }) {
       initial={{ opacity: 0, scale: 1.04 }}
       animate={isInView ? { opacity: 1, scale: 1 } : {}}
       transition={{ duration: 0.95, ease: EASE }}
-      className="aspect-video w-full overflow-hidden rounded-card lg:aspect-auto lg:flex-1"
+      className="w-full overflow-hidden rounded-[16px] lg:h-[451px] lg:w-auto lg:flex-1"
     >
       <img
         src={service.image}
@@ -105,14 +138,15 @@ function ServiceRow({ service }: { service: Service }) {
   );
 
   const text = (
+    /* Fixed 393 px column — matches Figma's flex-[1_0_0] remainder within 1255 px container */
     <div className="flex flex-col gap-[41px] lg:w-[393px] lg:shrink-0">
-      {/* Title + tags + description grouped with 13px gap to match Figma */}
+      {/* Title + tags + description — 13 px gap matches Figma */}
       <div className="flex flex-col gap-[13px]">
         <motion.h3
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.75, ease: EASE, delay: 0.12 }}
-          className="text-[48px] font-medium leading-none text-[#111111]"
+          className="text-[48px] font-medium leading-[1.05] text-[#111]"
         >
           {service.title}
         </motion.h3>
@@ -126,7 +160,7 @@ function ServiceRow({ service }: { service: Service }) {
           {service.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-pill border border-[#d9d9d9] px-[10px] py-2 text-[14px] font-medium text-[#1c1c1c]"
+              className="rounded-[999px] border border-[#d9d9d9] px-[10px] py-[8px] text-[14px] font-medium text-[#1c1c1c]"
             >
               {tag}
             </span>
@@ -143,53 +177,32 @@ function ServiceRow({ service }: { service: Service }) {
         </motion.p>
       </div>
 
-      {/* Buttons — 41px gap from text group via parent flex gap */}
       <motion.div
         initial={{ opacity: 0, y: 18 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.55, ease: EASE, delay: 0.42 }}
-        className="flex flex-wrap items-center gap-[18px]"
       >
-        <Link
-          to="/contact"
-          className="inline-flex items-center rounded-[150px] bg-black px-[18px] py-[12px] text-[16px] font-semibold text-white"
-        >
-          Contact Us
-        </Link>
-        <Link
-          to="/work"
-          className="inline-flex items-center gap-1 rounded-[150px] border-[1.5px] border-[#e5e5e5] bg-[#f5f5f5] px-[18px] py-[12px] text-[16px] font-semibold text-[#121212]"
-        >
-          Explore Portfolio
-          <img src={arrowUpRight} alt="" aria-hidden className="size-[21px]" />
-        </Link>
+        <ServiceCtas workCategory={service.workCategory} />
       </motion.div>
     </div>
   );
 
   return (
     <div
+      id={service.sectionId}
       ref={rowRef}
       className="flex flex-col gap-8 lg:h-[451px] lg:flex-row lg:items-stretch lg:gap-[60px]"
     >
       {service.imageLeft ? (
-        <>
-          {img}
-          {text}
-        </>
+        <>{img}{text}</>
       ) : (
-        <>
-          {text}
-          {img}
-        </>
+        <>{text}{img}</>
       )}
     </div>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Approach card — single card with its own InView + stagger delay via prop
-// ---------------------------------------------------------------------------
+/* ── Approach card ──────────────────────────────────────────────────────── */
 function ApproachCard({
   card,
   delay,
@@ -205,24 +218,22 @@ function ApproachCard({
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, ease: EASE, delay }}
-      className="relative h-[360px] min-w-0 flex-1 rounded-[16px] overflow-clip"
+      className="relative h-[360px] min-w-0 flex-1 overflow-clip rounded-[16px]"
       style={{ background: 'rgba(244,244,244,0.15)' }}
     >
-      {/* Large number watermark — 90px bold, 60% opacity, bleeds 38px above the card top-right */}
+      {/* 01/02/03/04 watermark — bleeds 38 px above the card */}
       <span
         aria-hidden
-        className="pointer-events-none select-none absolute right-0 font-display text-[90px] font-bold leading-none text-black opacity-60"
-        style={{ top: '-38px', letterSpacing: '0.05em' }}
+        className="pointer-events-none select-none absolute right-0 top-[-38px] text-[90px] font-bold leading-none text-black opacity-60 tracking-[4.5px]"
       >
         {card.number}
       </span>
 
-      {/* Content — title pinned to top, description pinned to bottom */}
       <div className="flex h-full flex-col justify-between p-8">
-        <h4 className="font-display text-[24px] font-medium leading-[105%] text-white">
+        <h4 className="text-[24px] font-medium leading-[1.05] text-white">
           {card.title}
         </h4>
-        <p className="text-[16px] font-normal leading-[150%] text-[#d9d9d9]">
+        <p className="text-[16px] font-normal leading-[1.5] text-[#d9d9d9]">
           {card.description}
         </p>
       </div>
@@ -230,11 +241,22 @@ function ApproachCard({
   );
 }
 
-// ---------------------------------------------------------------------------
-// Page
-// ---------------------------------------------------------------------------
+/* ── Page ───────────────────────────────────────────────────────────────── */
 export default function Services() {
   const [approachRef, approachInView] = useInView<HTMLDivElement>({ threshold: 0.1 });
+  const { hash } = useLocation();
+
+  /* Scroll to anchored service section when navigating from homepage cards */
+  useEffect(() => {
+    if (!hash) return;
+    const id = hash.slice(1);
+    const el = document.getElementById(id);
+    if (el) {
+      /* Small timeout lets the page finish its entrance animation first */
+      const t = setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+      return () => clearTimeout(t);
+    }
+  }, [hash]);
 
   return (
     <>
@@ -244,34 +266,32 @@ export default function Services() {
         path="/services"
       />
 
-      {/* HERO ---------------------------------------------------------------- */}
-      <section data-nav-tone="light" className="bg-paper px-6 pb-[80px] pt-[122px] sm:px-gutter-sm">
-        <div className="mx-auto flex max-w-site flex-col gap-8 lg:flex-row lg:items-start lg:gap-0">
+      {/* ── Hero ──────────────────────────────────────────────────────────── */}
+      {/* Figma: "OUR" at top-122, "SERVICES" at top-212, 72 px medium */}
+      <section
+        data-nav-tone="light"
+        className="bg-paper px-6 pb-[96px] pt-[200px] sm:px-[91px]"
+      >
+        <div className="mx-auto max-w-site">
           <motion.h1
             initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, ease: EASE }}
-            className="text-[clamp(3rem,5vw,4.5rem)] font-medium leading-[1.2] text-[#111111] lg:w-[476px] lg:shrink-0"
+            className="text-[72px] font-medium leading-[1.25] text-[#111]"
           >
             OUR
             <br />
             SERVICES
           </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
-            className="max-w-[460px] text-[20px] font-normal leading-[1.5] text-[#3a3a3a] lg:mt-[90px] lg:flex-1"
-          >
-            Whether you&rsquo;re building a brand, launching a product, or fixing an experience
-            — we&rsquo;re ready to jump in.
-          </motion.p>
         </div>
       </section>
 
-      {/* SERVICES GRID ------------------------------------------------------- */}
-      <section data-nav-tone="light" className="bg-paper px-6 pb-[120px] sm:px-gutter-sm">
+      {/* ── Services grid ─────────────────────────────────────────────────── */}
+      {/* Figma: left-[91px], w-[1261px], gap-[100px] between rows */}
+      <section
+        data-nav-tone="light"
+        className="bg-paper px-6 pb-[120px] pt-[200px] sm:px-[91px]"
+      >
         <div className="mx-auto flex max-w-site flex-col gap-[100px]">
           {services.map((service) => (
             <ServiceRow key={service.title} service={service} />
@@ -279,43 +299,45 @@ export default function Services() {
         </div>
       </section>
 
-      {/* OUR APPROACH -------------------------------------------------------- */}
-      {/* Section: 1440×847px in Figma — pt=62, pb=40, px=80 */}
-      <section data-nav-tone="dark" className="bg-black px-6 pb-[40px] pt-[62px] sm:px-[80px]">
+      {/* ── Our Approach ──────────────────────────────────────────────────── */}
+      {/* Figma: 847 px tall, bg-black, px-80, pt-62, content-width ~1280 */}
+      <section
+        data-nav-tone="dark"
+        className="bg-black px-6 pb-[40px] pt-[200px] sm:px-[80px]"
+      >
         <div className="mx-auto max-w-site">
           <div ref={approachRef}>
-            {/* Eyebrow: textCase=UPPER in Figma */}
+            {/* Eyebrow */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={approachInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, ease: EASE }}
-              className="font-display text-[20px] font-semibold uppercase leading-[105%] text-[#d9d9d9]"
+              className="text-[20px] font-semibold uppercase leading-[1.05] tracking-[0.02em] text-[#d9d9d9]"
             >
               Our Approach
             </motion.p>
 
-            {/* Description: mixed white/#7A7A7A segments matching Figma exactly */}
+            {/* Mixed-colour description — matches Figma segments exactly */}
             <motion.p
               initial={{ opacity: 0, y: 28 }}
               animate={approachInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.75, ease: EASE, delay: 0.1 }}
-              className="mt-8 font-display text-[32px] font-medium leading-[145%]"
+              className="mt-[53px] max-w-[1300px] text-[32px] font-medium leading-[1.45]"
             >
-              <span className="text-[#7A7A7A]">Most agencies deliver a design</span>
+              <span className="text-[#7a7a7a]">Most agencies deliver a design</span>
               <span className="text-white">.</span>
               <br />
               <span className="text-white">We care about what happens after it.</span>
-              <br />
-              <br />
-              <span className="text-[#7A7A7A]">We think </span>
+              <br /><br />
+              <span className="text-[#7a7a7a]">We think </span>
               <span className="text-white">good design </span>
-              <span className="text-[#7A7A7A]">should </span>
+              <span className="text-[#7a7a7a]">should </span>
               <span className="text-white">solve the right problem, work in the real world, </span>
-              <span className="text-[#7A7A7A]">and leave your team with something they can actually build on.</span>
+              <span className="text-[#7a7a7a]">and leave your team with something they can actually build on.</span>
             </motion.p>
           </div>
 
-          {/* Cards row: y=447 (gap=102 from description bottom), flex gap-5, fixed 258px cards */}
+          {/* Approach cards — Figma gap-[20px], cards 360 px tall */}
           <div className="mt-[102px] flex flex-wrap gap-5">
             {approachCards.map((card, i) => (
               <ApproachCard key={card.number} card={card} delay={i * 0.1} />
@@ -324,7 +346,6 @@ export default function Services() {
         </div>
       </section>
 
-      <ClosingCta />
       <ContactBanner />
     </>
   );
