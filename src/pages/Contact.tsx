@@ -21,7 +21,9 @@ export default function Contact() {
         description="Ready to start something? Reach out to PixelPandas — we'd love to hear about your project."
         path="/contact"
       />
-      <ContactBanner />
+      <div className="pt-10">
+        <ContactBanner />
+      </div>
       <CalEmbed />
     </>
   );

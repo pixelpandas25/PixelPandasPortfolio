@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import servicesAvatar   from '@/assets/images/services-avatar.webp';
 import folderOutline    from '@/assets/icons/services-folder-outline.svg';
@@ -88,7 +88,7 @@ const services: Service[] = [
 
 /* ── Constants ──────────────────────────────────────────────────────────── */
 const AUTO_ADVANCE_MS = 4000;
-const CARD_SHADOW     = '0px 8.54px 8.54px 6.405px rgba(3, 3, 3, 0.16)';
+const CARD_SHADOW     = '0px 0px 4px 0px rgba(68,68,68,0.25)';
 const CARD_TRANSITION = { type: 'spring' as const, stiffness: 170, damping: 24 };
 
 const FOLDER_FADE_S              = 0.35;
@@ -154,7 +154,7 @@ function CardContent({ service }: { service: Service }) {
       </div>
 
       {/* Tag */}
-      <span className="rounded-[4px] bg-[rgba(26,98,236,0.04)] px-[8px] py-[4px] text-[10px] font-semibold leading-normal text-[#1a62ec]">
+      <span className="rounded-[4px] bg-[rgba(26,98,236,0.04)] px-[8px] py-[4px] text-[10px] font-semibold leading-normal text-black">
         {service.tag}
       </span>
     </div>
@@ -181,42 +181,43 @@ export function DesignServices() {
   return (
     <section
       data-nav-tone="light"
-      className="relative overflow-hidden bg-paper px-6 pb-12 pt-16 sm:min-h-[760px] sm:px-gutter-sm"
+      className="relative overflow-hidden bg-paper px-6 pb-12 pt-9 sm:min-h-[760px] sm:px-gutter-sm sm:pt-16"
     >
       <div className="mx-auto flex w-full max-w-content flex-col items-center">
 
         {/* ── Heading ────────────────────────────────────────────────────── */}
         <div className="relative z-30 flex flex-col items-center gap-[4px] text-center">
-          <h2 className="text-display-4 font-bold leading-[1.35]">
+          <h2 className="text-[clamp(2rem,4.45vw,4rem)] font-bold leading-[1.35]">
             <span className="text-[#d9d9d9]">Our</span>
             {' '}
-            <span className="text-[#0f172a]">Design Services</span>
+            <span className="text-black">Design Services</span>
           </h2>
-          <p className="max-w-[658px] text-[16px] leading-[1.6] text-[#64748b]">
-            From startups finding their voice to established brands leveling
-            up &mdash; we bring structure, strategy, and stunning design to
-            everything we touch.
+          <p className="max-w-[658px] text-[14px] leading-[1.6] text-[#64748b] sm:text-[16px]">
+            Strategy meets design for every brand.
           </p>
         </div>
 
         {/* ── Mobile: stacked cards ──────────────────────────────────────── */}
-        <div className="mt-10 flex w-full flex-col gap-5 sm:hidden">
+        <div className="mt-[20px] flex w-full flex-col items-center gap-[20px] sm:hidden">
           {services.map((service) => (
-            <div
+            <Link
               key={service.id}
-              className="w-full overflow-hidden rounded-[22px] bg-white"
+              to={service.href}
+              className="h-[365px] w-[313px] overflow-hidden rounded-[20px] bg-white"
               style={{ boxShadow: CARD_SHADOW }}
             >
               <CardContent service={service} />
-            </div>
+            </Link>
           ))}
         </div>
 
         {/* ── Desktop: folder composition ────────────────────────────────── */}
-        <div
+        <motion.div
           ref={canvasRef}
           className="relative z-10 hidden w-full overflow-visible sm:block"
-          style={{ height: STAGE_H * scale, marginTop: 51 }}
+          style={{ height: STAGE_H * scale }}
+          animate={{ marginTop: hovered ? 51 : 99 }}
+          transition={prefersReducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 170, damping: 24 }}
         >
           <div
             className="relative mx-auto"
@@ -396,7 +397,7 @@ export function DesignServices() {
                   transition={{ default: positionTransition }}
                   style={{
                     position:      'absolute',
-                    borderRadius:  22,
+                    borderRadius:  20,
                     boxShadow:     CARD_SHADOW,
                     pointerEvents: hovered ? 'auto' : 'none',
                     zIndex:        hovered ? i + 1 : service.fan.zIndex,
@@ -414,7 +415,7 @@ export function DesignServices() {
             })}
 
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </section>

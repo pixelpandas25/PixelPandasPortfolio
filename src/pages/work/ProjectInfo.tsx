@@ -18,7 +18,7 @@ interface ProjectInfoProps {
 
 export function ProjectInfo({ detail }: ProjectInfoProps) {
   return (
-    <section data-nav-tone="light" className="bg-paper pt-[87px] pb-[87px] px-6 sm:px-[70px]">
+    <section data-nav-tone="light" className="bg-paper pt-[37px] pb-[87px] px-6 sm:px-[70px]">
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -29,12 +29,12 @@ export function ProjectInfo({ detail }: ProjectInfoProps) {
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1fr_265px] lg:gap-[100px]">
 
           {/* ── LEFT COLUMN ── */}
-          <div className="flex flex-col gap-[72px]">
+          <div className="flex flex-col gap-10 sm:gap-[72px]">
 
             {/* The Collaboration */}
             {detail.collaboration && (
               <motion.div variants={fadeUp} className="flex flex-col gap-[19px]">
-                <p className="text-[32px] font-medium leading-none text-[#000000]">
+                <p className="text-[22px] font-medium leading-none text-[#000000] sm:text-[32px]">
                   The Collaboration
                 </p>
                 <p className="text-[20px] font-normal leading-[1.5] text-[#3a3a3a]">
@@ -46,7 +46,7 @@ export function ProjectInfo({ detail }: ProjectInfoProps) {
             {/* Problem Definition */}
             {detail.problemDefinition && (
               <motion.div variants={fadeUp} className="flex flex-col gap-[19px]">
-                <p className="text-[32px] font-medium leading-none text-[#000000]">
+                <p className="text-[22px] font-medium leading-none text-[#000000] sm:text-[32px]">
                   <span className="text-[#e63636]">Problem</span> Definition
                 </p>
                 <p className="text-[20px] font-normal leading-[1.5] text-[#3a3a3a]">
@@ -61,14 +61,14 @@ export function ProjectInfo({ detail }: ProjectInfoProps) {
 
             {detail.industry && (
               <div className="flex flex-col gap-2">
-                <p className="text-[24px] font-medium leading-none text-[#000000]">Industry</p>
+                <p className="text-[18px] font-medium leading-none text-[#000000] sm:text-[24px]">Industry</p>
                 <p className="text-[20px] font-normal leading-[1.5] text-[#3a3a3a]">{detail.industry}</p>
               </div>
             )}
 
             {detail.services && detail.services.length > 0 && (
               <div className="flex flex-col gap-2">
-                <p className="text-[24px] font-medium leading-none text-[#000000]">Services</p>
+                <p className="text-[18px] font-medium leading-none text-[#000000] sm:text-[24px]">Services</p>
                 <p className="text-[20px] font-normal leading-[1.5] text-[#3a3a3a]">
                   {detail.services.join(', ')}
                 </p>
@@ -77,7 +77,7 @@ export function ProjectInfo({ detail }: ProjectInfoProps) {
 
             {detail.website && (
               <div className="flex flex-col gap-2">
-                <p className="text-[24px] font-medium leading-none text-[#000000]">Website</p>
+                <p className="text-[18px] font-medium leading-none text-[#000000] sm:text-[24px]">Website</p>
                 <a
                   href={detail.website}
                   target="_blank"

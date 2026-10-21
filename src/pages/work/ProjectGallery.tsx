@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 interface ProjectGalleryProps {
@@ -50,6 +50,18 @@ function HorizontalScrollGroup({
   cardH?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+
+  // Scale cards to fit viewport on mobile/tablet
+  const [viewW, setViewW] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 1440));
+  useEffect(() => {
+    const handler = () => setViewW(window.innerWidth);
+    window.addEventListener('resize', handler, { passive: true });
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  const hPad = viewW < 640 ? 48 : 140;
+  const effectiveW = Math.min(cardW, viewW - hPad);
+  const effectiveH = Math.round(cardH * (effectiveW / cardW));
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end end'],
@@ -57,12 +69,35 @@ function HorizontalScrollGroup({
 
   const GAP       = 24;
   const steps     = images.length - 1;
-  const SECTION_H = cardH + 200;
+  const SECTION_H = effectiveH + 200;
 
-  const rawX = useTransform(scrollYProgress, [0, 1], [0, -steps * (cardW + GAP)]);
+  const rawX = useTransform(scrollYProgress, [0, 1], [0, -steps * (effectiveW + GAP)]);
   const x    = useSpring(rawX, { stiffness: 100, damping: 30, mass: 0.5 });
 
   const outerHeight = `calc(min(${SECTION_H}px, 95vh) + ${steps * 40}vh)`;
+
+  // Mobile: vertical stack
+  if (viewW < 640) {
+    return (
+      <div data-nav-tone="light" className="mt-8 flex flex-col gap-6 px-6">
+        {images.map((src, i) => (
+          <motion.div
+            key={src || i}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: i * 0.05 }}
+            className="overflow-hidden rounded-[24px]"
+          >
+            <CardImage
+              src={src}
+              alt={`${projectName} — project visual ${indexOffset + i + 1}`}
+            />
+          </motion.div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div ref={ref} data-nav-tone="light" className="mt-[100px]" style={{ height: outerHeight }}>
@@ -76,13 +111,13 @@ function HorizontalScrollGroup({
       >
         <motion.div
           style={{ x, gap: `${GAP}px` }}
-          className="flex flex-shrink-0 pl-6 sm:pl-[70px]"
+          className="flex flex-shrink-0 pl-[70px]"
         >
           {images.map((src, i) => (
             <div
               key={src || i}
               className="flex-shrink-0 overflow-hidden rounded-[24px]"
-              style={{ width: `${cardW}px`, height: `${cardH}px` }}
+              style={{ width: `${effectiveW}px`, height: `${effectiveH}px` }}
             >
               <CardImage
                 src={src}

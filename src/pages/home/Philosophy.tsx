@@ -128,7 +128,7 @@ export function Philosophy() {
         </motion.div>
 
         {/* ── 3. Five cards — fingerprint scans in the center one ──────── */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           {Array.from({ length: cardCount }).map((_, i) => {
             const isCenter = i === CENTER;
 
@@ -139,8 +139,8 @@ export function Philosophy() {
                 initial={{ opacity: 0, y: 22 }}
                 className={
                   isCenter
-                    ? 'fp-card relative flex size-[84px] shrink-0 items-center justify-center overflow-hidden rounded-card border-[1.5px] border-accent bg-surface-card'
-                    : 'size-[84px] shrink-0 rounded-card bg-surface-card'
+                    ? 'fp-card relative flex size-[60px] shrink-0 items-center justify-center overflow-hidden rounded-card border-[1.5px] border-accent bg-surface-card sm:size-[84px]'
+                    : 'size-[60px] shrink-0 rounded-card bg-surface-card sm:size-[84px]'
                 }
               >
                 {isCenter && (

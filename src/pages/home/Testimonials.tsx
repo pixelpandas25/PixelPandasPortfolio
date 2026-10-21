@@ -36,7 +36,6 @@ function VideoModal({
       className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm"
       onClick={onClose}
     >
-      {/* Close button — pinned to top-right of the overlay */}
       <motion.button
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -51,7 +50,6 @@ function VideoModal({
         </svg>
       </motion.button>
 
-      {/* Video card — 100px padding top + bottom */}
       <motion.div
         initial={{ scale: 0.92, opacity: 0, y: 16 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -103,15 +101,10 @@ function TestimonialCard({
         />
         <div className="absolute inset-0 bg-ink-black/35" />
 
-        {/* Play button — only shown when video exists */}
         {testimonial.video && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex size-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm ring-1 ring-white/30 transition-transform duration-200 group-hover:scale-110">
-              <svg
-                className="ml-1 size-7 text-white drop-shadow"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
+              <svg className="ml-1 size-7 text-white drop-shadow" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M8 5v14l11-7z" />
               </svg>
             </div>
@@ -140,6 +133,105 @@ function TestimonialCard({
   );
 }
 
+/* ── Mobile Carousel ────────────────────────────────────────────────────── */
+
+const slideVariants = {
+  enter:  (d: number) => ({ x: d > 0 ? '100%' : '-100%', opacity: 0   }),
+  center:              ({ x: '0%',   opacity: 1   }),
+  exit:   (d: number) => ({ x: d > 0 ? '-100%' : '100%', opacity: 0   }),
+};
+
+function MobileCarousel({
+  items,
+  onPlay,
+}: {
+  items: Testimonial[];
+  onPlay: (t: Testimonial) => void;
+}) {
+  const count = items.length;
+  const [idx, setIdx]       = useState(0);
+  const [dir, setDir]       = useState(1);
+  const [paused, setPaused] = useState(false);
+
+  const touchStartX = useRef(0);
+  // Resume auto-play 3 s after last interaction
+  const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const go = (next: number) => {
+    const clamped = (next + count) % count;
+    setDir(clamped === (idx + 1) % count ? 1 : -1);
+    setIdx(clamped);
+  };
+
+  // Auto-advance every 4 s, pauses on hover / touch
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(() => {
+      setDir(1);
+      setIdx((i) => (i + 1) % count);
+    }, 4000);
+    return () => clearInterval(id);
+  }, [paused, count]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    setPaused(true);
+    if (resumeTimer.current) clearTimeout(resumeTimer.current);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(dx) > 40) {
+      const next = (idx + (dx < 0 ? 1 : -1) + count) % count;
+      setDir(dx < 0 ? 1 : -1);
+      setIdx(next);
+    }
+    // Resume auto-play after 3 s of inactivity
+    resumeTimer.current = setTimeout(() => setPaused(false), 3000);
+  };
+
+  return (
+    <div
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Card track */}
+      <div className="overflow-hidden">
+        <AnimatePresence mode="popLayout" custom={dir} initial={false}>
+          <motion.div
+            key={idx}
+            custom={dir}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+            className="flex justify-center px-6"
+          >
+            <TestimonialCard testimonial={items[idx]} onPlay={onPlay} />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Dot indicators */}
+      <div className="mt-6 flex items-center justify-center gap-2">
+        {items.map((_, i) => (
+          <button
+            key={i}
+            aria-label={`Go to testimonial ${i + 1}`}
+            onClick={() => go(i)}
+            className={`h-2 rounded-full bg-[#1d1d1f] transition-all duration-300 ${
+              i === idx ? 'w-5 opacity-100' : 'w-2 opacity-20'
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ── Section ────────────────────────────────────────────────────────────── */
 
 export function Testimonials() {
@@ -147,17 +239,25 @@ export function Testimonials() {
 
   return (
     <section id="testimonials" data-nav-tone="light" className="section-y bg-paper">
-      <div className="mx-auto flex max-w-site flex-col gap-12 pl-6 sm:pl-gutter-sm">
-        <div className="flex flex-col gap-2">
+      <div className="mx-auto flex max-w-site flex-col gap-12">
+
+        {/* Header */}
+        <div className="flex flex-col gap-2 pl-6 sm:pl-gutter-sm">
           <EyebrowLabel>Testimonials</EyebrowLabel>
           <h2 className="text-display-4 font-bold leading-none text-[#1d1d1f]">What our clients say.</h2>
         </div>
 
+        {/* Mobile: auto-carousel */}
+        <div className="sm:hidden">
+          <MobileCarousel items={testimonials} onPlay={setActiveVideo} />
+        </div>
+
+        {/* Desktop: horizontal scroll */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="flex gap-6 overflow-x-auto pb-4 pr-6 [scrollbar-width:thin] sm:pr-gutter-sm"
+          className="hidden gap-6 overflow-x-auto pb-4 pl-gutter-sm pr-6 [scrollbar-width:thin] sm:flex sm:pr-gutter-sm"
         >
           {testimonials.map((testimonial) => (
             <TestimonialCard
@@ -167,6 +267,7 @@ export function Testimonials() {
             />
           ))}
         </motion.div>
+
       </div>
 
       <AnimatePresence>

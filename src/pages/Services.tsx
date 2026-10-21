@@ -122,82 +122,72 @@ function ServiceCtas({ workCategory }: { workCategory: string }) {
 function ServiceRow({ service }: { service: Service }) {
   const [rowRef, isInView] = useInView<HTMLDivElement>({ threshold: 0.15 });
 
-  const img = (
-    <motion.div
-      initial={{ opacity: 0, scale: 1.04 }}
-      animate={isInView ? { opacity: 1, scale: 1 } : {}}
-      transition={{ duration: 0.95, ease: EASE }}
-      className="w-full overflow-hidden rounded-[16px] lg:h-[451px] lg:w-auto lg:flex-1"
-    >
-      <img
-        src={service.image}
-        alt={service.title}
-        className="h-full w-full object-cover"
-      />
-    </motion.div>
-  );
-
-  const text = (
-    /* Fixed 393 px column — matches Figma's flex-[1_0_0] remainder within 1255 px container */
-    <div className="flex flex-col gap-[41px] lg:w-[393px] lg:shrink-0">
-      {/* Title + tags + description — 13 px gap matches Figma */}
-      <div className="flex flex-col gap-[13px]">
-        <motion.h3
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.75, ease: EASE, delay: 0.12 }}
-          className="text-[48px] font-medium leading-[1.05] text-[#111]"
-        >
-          {service.title}
-        </motion.h3>
-
-        <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.65, ease: EASE, delay: 0.22 }}
-          className="flex flex-wrap gap-[13px]"
-        >
-          {service.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-[999px] border border-[#d9d9d9] px-[10px] py-[8px] text-[14px] font-medium text-[#1c1c1c]"
-            >
-              {tag}
-            </span>
-          ))}
-        </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0, y: 22 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: EASE, delay: 0.32 }}
-          className="text-[20px] font-normal leading-[1.5] text-[#3a3a3a]"
-        >
-          {service.description}
-        </motion.p>
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.55, ease: EASE, delay: 0.42 }}
-      >
-        <ServiceCtas workCategory={service.workCategory} />
-      </motion.div>
-    </div>
-  );
-
   return (
     <div
       id={service.sectionId}
       ref={rowRef}
       className="flex flex-col gap-8 lg:h-[451px] lg:flex-row lg:items-stretch lg:gap-[60px]"
     >
-      {service.imageLeft ? (
-        <>{img}{text}</>
-      ) : (
-        <>{text}{img}</>
-      )}
+      {/* Image — always first on mobile; lg:order-* swaps it on desktop */}
+      <motion.div
+        initial={{ opacity: 0, scale: 1.04 }}
+        animate={isInView ? { opacity: 1, scale: 1 } : {}}
+        transition={{ duration: 0.95, ease: EASE }}
+        className={`w-full overflow-hidden rounded-[16px] lg:h-[451px] lg:w-auto lg:flex-1${!service.imageLeft ? ' lg:order-last' : ''}`}
+      >
+        <img
+          src={service.image}
+          alt={service.title}
+          className="h-full w-full object-cover"
+        />
+      </motion.div>
+
+      {/* Text — always second on mobile; lg:order-* swaps it on desktop */}
+      <div className={`flex flex-col gap-[16px] lg:gap-[41px] lg:w-[393px] lg:shrink-0${!service.imageLeft ? ' lg:order-first' : ''}`}>
+        <div className="flex flex-col gap-[13px]">
+          <motion.h3
+            initial={{ opacity: 0, y: 40 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.75, ease: EASE, delay: 0.12 }}
+            className="text-[clamp(1.75rem,5vw,3rem)] font-medium leading-[1.05] text-[#111]"
+          >
+            {service.title}
+          </motion.h3>
+
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.65, ease: EASE, delay: 0.22 }}
+            className="flex flex-wrap gap-[13px]"
+          >
+            {service.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-[999px] border border-[#d9d9d9] px-[10px] py-[8px] text-[14px] font-medium text-[#1c1c1c]"
+              >
+                {tag}
+              </span>
+            ))}
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 22 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, ease: EASE, delay: 0.32 }}
+            className="text-[16px] font-normal leading-[1.5] text-[#3a3a3a] lg:text-[20px]"
+          >
+            {service.description}
+          </motion.p>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.55, ease: EASE, delay: 0.42 }}
+        >
+          <ServiceCtas workCategory={service.workCategory} />
+        </motion.div>
+      </div>
     </div>
   );
 }
@@ -218,7 +208,7 @@ function ApproachCard({
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, ease: EASE, delay }}
-      className="relative h-[360px] min-w-0 flex-1 overflow-clip rounded-[16px]"
+      className="relative h-[360px] overflow-clip rounded-[16px]"
       style={{ background: 'rgba(244,244,244,0.15)' }}
     >
       {/* 01/02/03/04 watermark — bleeds 38 px above the card */}
@@ -270,14 +260,14 @@ export default function Services() {
       {/* Figma: "OUR" at top-122, "SERVICES" at top-212, 72 px medium */}
       <section
         data-nav-tone="light"
-        className="bg-paper px-6 pb-[96px] pt-[200px] sm:px-[91px]"
+        className="bg-paper px-6 pb-[48px] pt-[120px] sm:px-[91px]"
       >
         <div className="mx-auto max-w-site">
           <motion.h1
             initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, ease: EASE }}
-            className="text-[72px] font-medium leading-[1.25] text-[#111]"
+            className="text-[clamp(2.5rem,8vw,4.5rem)] font-medium leading-[1.25] text-[#111]"
           >
             OUR
             <br />
@@ -290,9 +280,9 @@ export default function Services() {
       {/* Figma: left-[91px], w-[1261px], gap-[100px] between rows */}
       <section
         data-nav-tone="light"
-        className="bg-paper px-6 pb-[120px] pt-[200px] sm:px-[91px]"
+        className="bg-paper px-6 pb-[120px] pt-[48px] sm:px-[91px]"
       >
-        <div className="mx-auto flex max-w-site flex-col gap-[100px]">
+        <div className="mx-auto flex max-w-site flex-col gap-[80px] sm:gap-[100px]">
           {services.map((service) => (
             <ServiceRow key={service.title} service={service} />
           ))}
@@ -303,7 +293,7 @@ export default function Services() {
       {/* Figma: 847 px tall, bg-black, px-80, pt-62, content-width ~1280 */}
       <section
         data-nav-tone="dark"
-        className="bg-black px-6 pb-[40px] pt-[200px] sm:px-[80px]"
+        className="bg-black px-6 pb-[40px] pt-[80px] sm:px-[80px]"
       >
         <div className="mx-auto max-w-site">
           <div ref={approachRef}>
@@ -322,7 +312,7 @@ export default function Services() {
               initial={{ opacity: 0, y: 28 }}
               animate={approachInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.75, ease: EASE, delay: 0.1 }}
-              className="mt-[53px] max-w-[1300px] text-[32px] font-medium leading-[1.45]"
+              className="mt-8 max-w-[1300px] text-[clamp(1.25rem,2.5vw,2rem)] font-medium leading-[1.45] sm:mt-[53px]"
             >
               <span className="text-[#7a7a7a]">Most agencies deliver a design</span>
               <span className="text-white">.</span>
@@ -338,7 +328,7 @@ export default function Services() {
           </div>
 
           {/* Approach cards — Figma gap-[20px], cards 360 px tall */}
-          <div className="mt-[102px] flex flex-wrap gap-5">
+          <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:mt-[102px] lg:grid-cols-4">
             {approachCards.map((card, i) => (
               <ApproachCard key={card.number} card={card} delay={i * 0.1} />
             ))}

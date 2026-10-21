@@ -35,7 +35,7 @@ export function BuiltForMotion() {
             <div key={item.number} className="flex flex-col items-start gap-2">
               <img src={item.image} alt="" aria-hidden className="h-[140px] w-auto object-contain sm:h-[178px]" />
               <p className="text-display-5 font-semibold leading-[1.35] text-[#f2f2f2]">{item.number}</p>
-              <p className="text-body-lg font-medium leading-[1.35] text-[#8a8a93] sm:text-[20px]">{item.text}</p>
+              <p className="text-[14px] font-medium leading-[1.35] text-[#8a8a93] sm:text-[20px]">{item.text}</p>
             </div>
           ))}
         </div>

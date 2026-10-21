@@ -325,7 +325,7 @@ export function ContactBanner() {
     <section
       id="contact"
       data-nav-tone="light"
-      className="section-y relative z-[60] overflow-hidden bg-paper"
+      className="pb-10 sm:py-14 relative z-[60] overflow-hidden bg-paper"
     >
       {/* ================================================================== */}
       {/* DESKTOP                                                             */}
@@ -512,101 +512,104 @@ export function ContactBanner() {
       {/* MOBILE / TABLET                                                    */}
       {/* ================================================================== */}
 
+      {/*
+       * Fixed-height 275px container matching Figma's Contact section exactly.
+       * overflow-hidden clips the phone cord so only the handset is visible.
+       * Contact.tsx adds pt-10 so this div starts at page y=80 (navbar bottom).
+       */}
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{
-          once: true,
-          amount: 0.3,
-        }}
-        className="mx-auto max-w-site px-6 sm:px-gutter-sm lg:hidden"
+        viewport={{ once: true, amount: 0.3 }}
+        className="relative h-[275px] w-full overflow-hidden lg:hidden"
       >
-        {/* Email */}
+        {/* Phone: top=-93px = Figma calc(50%-122px) -translate-y-1/2 in 275px frame */}
+        <motion.img
+          variants={phoneVariants(-6)}
+          src={phoneImg}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute z-10 h-[217px] w-auto"
+          style={{
+            left: '28.75%',
+            top: '-93px',
+            transformOrigin: '50% 18%',
+            willChange: 'transform, opacity',
+          }}
+        />
+
+        {/* Email: Figma left-[252px] top-[18px] → right-aligned is more responsive */}
         <motion.p
           variants={simpleTextVariants}
-          className="text-body-lg text-ink-900"
+          className="absolute right-5 top-[18px] whitespace-nowrap text-[12px] leading-[1.6] text-[#121212]"
         >
           hello@pixelpandas.in
         </motion.p>
 
-        <div className="relative mt-10">
-          {/* ------------------------------------------------------------ */}
-          {/* MOBILE PHONE                                                  */}
-          {/* ------------------------------------------------------------ */}
-
-          <motion.img
-            initial="hidden"
-            whileInView="visible"
-            viewport={{
-              once: true,
-              amount: 0.4,
-            }}
-            variants={phoneVariants(-6)}
-            src={phoneImg}
-            alt=""
-            aria-hidden
-            className="pointer-events-none absolute left-[24%] top-0 z-10 h-[190px] w-auto -translate-y-[95%]"
-            style={{
-              transformOrigin: '50% 18%',
-              willChange: 'transform, opacity',
-            }}
-          />
-
-          {/* ------------------------------------------------------------ */}
-          {/* MOBILE TEXT                                                   */}
-          {/* ------------------------------------------------------------ */}
-
-          <motion.h2
+        {/* Content block: Figma left-[20px] top-[83px] */}
+        <div className="absolute left-5 right-5 top-[83px] flex flex-col gap-[17px]">
+          <motion.div
             variants={wordContainerVariants}
-            className="text-balance text-[clamp(2.6rem,9vw,4.5rem)] font-bold leading-[1.05] tracking-[-0.04em] text-[#3a3a3a]"
+            className="flex flex-col gap-3 font-semibold text-[#3a3a3a]"
           >
-            <AnimatedWord>We&rsquo;re</AnimatedWord>{' '}
-            <AnimatedWord>the</AnimatedWord>{' '}
-            <AnimatedWord>team</AnimatedWord>{' '}
-            <AnimatedWord>you</AnimatedWord>{' '}
-            <AnimatedWord>contact</AnimatedWord>
+            <div className="flex items-center gap-[40px] text-[20px] leading-none">
+              <span className="whitespace-nowrap">
+                <AnimatedWord>We&rsquo;re</AnimatedWord>{' '}
+                <AnimatedWord>the</AnimatedWord>
+              </span>
+              <span className="whitespace-nowrap">
+                <AnimatedWord>team</AnimatedWord>{' '}
+                <AnimatedWord>you</AnimatedWord>{' '}
+                <AnimatedWord>contact</AnimatedWord>
+              </span>
+            </div>
+            <div className="text-[20px]">
+              <p className="leading-[1.5]">
+                <AnimatedWord>When</AnimatedWord>{' '}
+                <AnimatedWord>your</AnimatedWord>{' '}
+                <AnimatedWord>product</AnimatedWord>{' '}
+                <AnimatedWord>needs</AnimatedWord>
+              </p>
+              <p className="leading-[1.5]">
+                <AnimatedWord>More</AnimatedWord>{' '}
+                <AnimatedWord>than</AnimatedWord>{' '}
+                <AnimatedWord>just</AnimatedWord>{' '}
+                <AnimatedWord>good</AnimatedWord>{' '}
+                <AnimatedWord>design</AnimatedWord>
+              </p>
+            </div>
+          </motion.div>
 
-            <br />
+          <motion.div variants={simpleTextVariants} className="flex items-center gap-3">
+            <a
+              href="mailto:hello@pixelpandas.in"
+              className="rounded-full border border-[#e5e5e5] bg-[#f5f5f5] px-[12px] py-[8px] text-[10px] font-semibold leading-none text-[#121212] transition-colors duration-hover hover:bg-[#ebebeb]"
+            >
+              Send a mail
+            </a>
+            <Link
+              to="/contact#cal-embed"
+              className="rounded-full bg-black px-[12px] py-[8px] text-[10px] font-semibold leading-none text-white transition-colors duration-hover hover:bg-[#1a1a1a]"
+            >
+              Book a call
+            </Link>
+          </motion.div>
 
-            <AnimatedWord>When</AnimatedWord>{' '}
-            <AnimatedWord>your</AnimatedWord>{' '}
-            <AnimatedWord>product</AnimatedWord>{' '}
-            <AnimatedWord>needs</AnimatedWord>
-
-            <br />
-
-            <AnimatedWord>More</AnimatedWord>{' '}
-            <AnimatedWord>than</AnimatedWord>{' '}
-            <AnimatedWord>just</AnimatedWord>{' '}
-            <AnimatedWord>good</AnimatedWord>{' '}
-            <AnimatedWord>design</AnimatedWord>
-          </motion.h2>
+          <motion.div variants={chipVariants} className="flex items-center gap-3">
+            {chips.map((chip) => (
+              <a
+                key={chip.label}
+                href={chip.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-[2px] whitespace-nowrap transition-opacity duration-hover hover:opacity-70"
+              >
+                <img src={chip.icon} alt="" className="size-[6.55px]" />
+                <span className="text-[12px] leading-[1.6] text-[#7a7a7a]">{chip.label}</span>
+              </a>
+            ))}
+          </motion.div>
         </div>
-
-        {/* Social links */}
-        <ChipList
-          variants={chipVariants}
-          className="mt-16 flex flex-wrap items-center justify-center gap-10"
-        />
-
-        {/* CTAs */}
-        <motion.div
-          variants={simpleTextVariants}
-          className="mt-8 flex flex-wrap items-center justify-center gap-3"
-        >
-          <a
-            href="mailto:hello@pixelpandas.in"
-            className="rounded-[100px] border border-[#e5e5e5] bg-[#f5f5f5] px-6 py-4 text-[15px] font-semibold leading-none text-[#121212] transition-colors duration-hover hover:bg-[#ebebeb]"
-          >
-            Send a mail
-          </a>
-          <Link
-            to="/contact#cal-embed"
-            className="rounded-[100px] bg-black px-6 py-4 text-[15px] font-semibold leading-none text-white transition-colors duration-hover hover:bg-[#1a1a1a]"
-          >
-            Book a call
-          </Link>
-        </motion.div>
       </motion.div>
     </section>
   );

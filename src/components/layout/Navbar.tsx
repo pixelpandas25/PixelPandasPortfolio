@@ -32,11 +32,11 @@ export function Navbar() {
       }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       style={{ pointerEvents: visible ? 'auto' : 'none' }}
-      className="fixed inset-x-0 top-6 z-[70] flex justify-center px-4"
+      className="fixed inset-x-0 top-6 z-[70] flex justify-center px-5"
     >
       <nav
         aria-label="Primary"
-        className="flex w-auto items-center gap-4 rounded-pill bg-[rgba(28,28,28,0.2)] p-[6px] backdrop-blur-md lg:w-full lg:max-w-[572px] lg:gap-8"
+        className="flex w-full items-center gap-4 rounded-pill bg-[rgba(28,28,28,0.2)] p-[6px] backdrop-blur-md lg:max-w-[572px] lg:gap-8"
       >
         <RouterNavLink
           to="/"
@@ -102,34 +102,69 @@ export function Navbar() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.2 }}
-            className="absolute left-4 right-4 top-[76px] rounded-card bg-paper p-4 shadow-xl lg:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-[75] flex flex-col bg-black lg:hidden"
           >
-            <ul className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <li key={link.label}>
+            {/* Overlay header */}
+            <div className="flex items-center justify-between px-6 pt-7">
+              <RouterNavLink
+                to="/"
+                aria-label="PixelPandas home"
+                onClick={() => { setMobileOpen(false); scrollHomeToTop(); }}
+                className="size-11 overflow-hidden rounded-squircle"
+              >
+                <img src={logo} alt="PixelPandas logo" className="size-full object-cover" />
+              </RouterNavLink>
+              <button
+                type="button"
+                aria-label="Close menu"
+                onClick={() => setMobileOpen(false)}
+                className="flex size-10 items-center justify-center"
+              >
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
+                  <path d="M17 5L5 17M5 5l12 12" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Nav items */}
+            <ul className="mt-[67px] flex flex-col gap-[36px] px-6">
+              {navLinks.map((link, i) => (
+                <motion.li
+                  key={link.label}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.06 + 0.06, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                >
                   <RouterNavLink
                     to={link.to}
                     onClick={() => setMobileOpen(false)}
-                    className="block rounded-lg px-3 py-3 text-body font-medium text-ink-900 hover:bg-surface-light"
+                    className={({ isActive }) =>
+                      cn(
+                        'block px-2 py-1 text-[32px] font-medium uppercase leading-none transition-colors duration-hover',
+                        isActive ? 'text-white' : 'text-[#999]',
+                      )
+                    }
                   >
                     {link.label}
                   </RouterNavLink>
-                </li>
+                </motion.li>
               ))}
-              <li>
-                <RouterNavLink
-                  to="/contact"
-                  onClick={() => setMobileOpen(false)}
-                  className="mt-2 block rounded-pill bg-ink-black px-3 py-3 text-center text-body font-medium text-paper"
-                >
-                  Let&rsquo;s Talk
-                </RouterNavLink>
-              </li>
             </ul>
+
+            {/* Let's Talk CTA */}
+            <div className="mt-auto px-5 pb-10">
+              <RouterNavLink
+                to="/contact"
+                onClick={() => setMobileOpen(false)}
+                className="block w-full rounded-full bg-white py-3 text-center text-[24px] font-medium text-[#1c1c1c]"
+              >
+                Let&rsquo;s Talk
+              </RouterNavLink>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

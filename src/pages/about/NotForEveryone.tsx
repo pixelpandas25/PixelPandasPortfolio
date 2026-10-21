@@ -83,7 +83,7 @@ export function NotForEveryone() {
             <div className="flex items-center gap-0 self-start rounded-pill border border-[#d9d9d9]/50 bg-white/25 p-2">
               <button
                 onClick={() => setTab('for')}
-                className={`rounded-pill px-5 py-2.5 text-[20px] font-medium transition-all duration-300 ${
+                className={`rounded-pill px-3 py-2 text-[14px] font-medium transition-all duration-300 sm:px-5 sm:py-2.5 sm:text-[20px] ${
                   isFor ? 'bg-black text-white' : 'text-[#7a7a7a]'
                 }`}
               >
@@ -91,7 +91,7 @@ export function NotForEveryone() {
               </button>
               <button
                 onClick={() => setTab('not')}
-                className={`rounded-pill px-5 py-2.5 text-[20px] font-medium transition-all duration-300 ${
+                className={`rounded-pill px-3 py-2 text-[14px] font-medium transition-all duration-300 sm:px-5 sm:py-2.5 sm:text-[20px] ${
                   !isFor ? 'bg-[rgba(0,0,0,0.8)] text-white' : 'text-[#7a7a7a]'
                 }`}
               >
@@ -110,13 +110,13 @@ export function NotForEveryone() {
                 className="flex flex-col gap-6 sm:gap-[25px]"
               >
                 {(isFor ? forList : notForList).map((item) => (
-                  <li key={item} className="flex items-center gap-4 sm:gap-[20px]">
+                  <li key={item} className="flex items-center gap-3 sm:gap-[20px]">
                     {isFor ? (
-                      <img src={bulletCheck} alt="" aria-hidden className="h-[25.847px] w-[30px] shrink-0" />
+                      <img src={bulletCheck} alt="" aria-hidden className="h-[22px] w-[25px] shrink-0 sm:h-[25.847px] sm:w-[30px]" />
                     ) : (
-                      <img src={bulletX} alt="" aria-hidden className="size-[32px] shrink-0" />
+                      <img src={bulletX} alt="" aria-hidden className="size-[26px] shrink-0 sm:size-[32px]" />
                     )}
-                    <p className="text-[20px] leading-[1.4] text-[#141414]">{item}</p>
+                    <p className="text-[16px] leading-[1.4] text-[#141414] sm:text-[20px]">{item}</p>
                   </li>
                 ))}
               </motion.ul>
