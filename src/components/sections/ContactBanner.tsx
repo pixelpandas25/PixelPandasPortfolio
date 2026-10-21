@@ -1,6 +1,8 @@
 import { motion, type Variants } from 'framer-motion';
+import { useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
+
 import phoneImg from '@/assets/images/contact-phone.webp';
 import iconLinkedin from '@/assets/icons/social-linkedin-dark.webp';
 import iconInstagram from '@/assets/icons/social-instagram-dark.webp';
@@ -25,27 +27,9 @@ const chips = [
 ];
 
 /* -------------------------------------------------------------------------- */
-/* PHONE PHYSICS                                                             */
+/* PHONE PHYSICS                                                              */
 /* -------------------------------------------------------------------------- */
 
-/**
- * The handset behaves like a real weighted object attached to an elastic cord:
- *
- * DROP
- *   ↓
- * IMPACT
- *   ↓
- * LARGE SWING
- *   ↓
- * ELASTIC RECOIL
- *   ↓
- * SMALLER SWINGS
- *   ↓
- * SETTLE
- *
- * We deliberately avoid scaleX/scaleY because the handset itself should
- * remain rigid. The physical feeling comes from rotation + translation.
- */
 function phoneVariants(restRotate: number): Variants {
   return {
     hidden: {
@@ -57,15 +41,6 @@ function phoneVariants(restRotate: number): Variants {
 
     visible: {
       opacity: 1,
-
-      /*
-       * Vertical movement:
-       *
-       * - Starts above the final position
-       * - Slightly overshoots after impact
-       * - Small vertical oscillations
-       * - Finally settles at exactly y: 0
-       */
       y: [
         '-22%',
         '0%',
@@ -76,33 +51,7 @@ function phoneVariants(restRotate: number): Variants {
         '0.12%',
         '0%',
       ],
-
-      /*
-       * Horizontal movement represents the handset's momentum.
-       *
-       * The progressively smaller values create the feeling of
-       * an elastic cable losing energy.
-       */
-      x: [
-        0,
-        0,
-        -8,
-        6,
-        -4,
-        2.5,
-        -1,
-        0,
-      ],
-
-      /*
-       * Main pendulum motion.
-       *
-       * Large initial swing:
-       * +16 → -11 → +7 → -4 → +2 → -0.8 → 0
-       *
-       * This is much closer to a weighted handset swinging on a cable
-       * than a generic "jiggle".
-       */
+      x: [0, 0, -8, 6, -4, 2.5, -1, 0],
       rotate: [
         restRotate + 16,
         restRotate,
@@ -119,60 +68,19 @@ function phoneVariants(restRotate: number): Variants {
           duration: 0.22,
           ease: 'easeOut',
         },
-
-        /*
-         * The vertical drop happens quickly and has a slight
-         * physical rebound.
-         */
         y: {
           duration: 1.7,
-          times: [
-            0,
-            0.36,
-            0.47,
-            0.59,
-            0.7,
-            0.81,
-            0.91,
-            1,
-          ],
+          times: [0, 0.36, 0.47, 0.59, 0.7, 0.81, 0.91, 1],
           ease: 'easeOut',
         },
-
-        /*
-         * Horizontal inertia.
-         */
         x: {
           duration: 1.7,
-          times: [
-            0,
-            0.36,
-            0.47,
-            0.59,
-            0.7,
-            0.81,
-            0.91,
-            1,
-          ],
+          times: [0, 0.36, 0.47, 0.59, 0.7, 0.81, 0.91, 1],
           ease: 'easeOut',
         },
-
-        /*
-         * Stronger damping gives a noticeable elastic swing,
-         * but the movement still settles naturally.
-         */
         rotate: {
           duration: 1.7,
-          times: [
-            0,
-            0.36,
-            0.47,
-            0.59,
-            0.7,
-            0.81,
-            0.91,
-            1,
-          ],
+          times: [0, 0.36, 0.47, 0.59, 0.7, 0.81, 0.91, 1],
           ease: 'easeOut',
         },
       },
@@ -181,15 +89,9 @@ function phoneVariants(restRotate: number): Variants {
 }
 
 /* -------------------------------------------------------------------------- */
-/* TEXT ANIMATION                                                            */
+/* TEXT ANIMATION                                                             */
 /* -------------------------------------------------------------------------- */
 
-/**
- * Individual word animation.
- *
- * Each word rises very slightly while fading in.
- * This gives a smooth editorial / premium entrance.
- */
 const wordVariants: Variants = {
   hidden: {
     opacity: 0,
@@ -206,9 +108,6 @@ const wordVariants: Variants = {
   },
 };
 
-/**
- * Controls the timing of the individual words.
- */
 const wordContainerVariants: Variants = {
   hidden: {},
 
@@ -220,9 +119,6 @@ const wordContainerVariants: Variants = {
   },
 };
 
-/**
- * Email/social elements use a simpler entrance.
- */
 const simpleTextVariants: Variants = {
   hidden: {
     opacity: 0,
@@ -307,7 +203,6 @@ function ChipList({
               alt=""
               className="size-6"
             />
-
             {chip.label}
           </a>
         </li>
@@ -321,6 +216,50 @@ function ChipList({
 /* -------------------------------------------------------------------------- */
 
 export function ContactBanner() {
+  const rowRef = useRef<HTMLDivElement>(null);
+  const theRef = useRef<HTMLSpanElement>(null);
+  const teamRef = useRef<HTMLSpanElement>(null);
+
+  const [phoneLeft, setPhoneLeft] = useState<number | null>(null);
+
+  /*
+   * Dynamically position the phone between "the" and "team".
+   * Recalculate when the text dimensions or viewport changes.
+   */
+
+  useLayoutEffect(() => {
+    const row = rowRef.current;
+    const the = theRef.current;
+    const team = teamRef.current;
+
+    if (!row || !the || !team) return;
+
+    const updatePhonePosition = () => {
+      const rowRect = row.getBoundingClientRect();
+      const theRect = the.getBoundingClientRect();
+      const teamRect = team.getBoundingClientRect();
+
+      const midpoint = (theRect.right + teamRect.left) / 2;
+
+      setPhoneLeft(midpoint - rowRect.left);
+    };
+
+    updatePhonePosition();
+
+    const observer = new ResizeObserver(updatePhonePosition);
+
+    observer.observe(row);
+    observer.observe(the);
+    observer.observe(team);
+
+    window.addEventListener('resize', updatePhonePosition);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updatePhonePosition);
+    };
+  }, []);
+
   return (
     <section
       id="contact"
@@ -344,9 +283,7 @@ export function ContactBanner() {
           containerType: 'inline-size',
         }}
       >
-        {/* -------------------------------------------------------------- */}
-        {/* EMAIL                                                           */}
-        {/* -------------------------------------------------------------- */}
+        {/* EMAIL */}
 
         <motion.p
           variants={simpleTextVariants}
@@ -359,9 +296,7 @@ export function ContactBanner() {
           hello@pixelpandas.in
         </motion.p>
 
-        {/* -------------------------------------------------------------- */}
-        {/* TELEPHONE HANDSET                                               */}
-        {/* -------------------------------------------------------------- */}
+        {/* TELEPHONE HANDSET */}
 
         <motion.img
           initial="hidden"
@@ -373,31 +308,19 @@ export function ContactBanner() {
           variants={phoneVariants(0)}
           src={phoneImg}
           alt=""
-          aria-hidden
+          aria-hidden="true"
           className="pointer-events-none absolute z-10 object-cover"
           style={{
-            /*
-             * IMPORTANT:
-             * These layout values remain exactly as before.
-             */
             left: '34.58%',
             top: '-39.21%',
             width: '6.99%',
             height: '93.59%',
-
-            /*
-             * The phone swings from the upper portion of the handset,
-             * creating a believable cable/attachment pivot.
-             */
             transformOrigin: '50% 18%',
-
             willChange: 'transform, opacity',
           }}
         />
 
-        {/* -------------------------------------------------------------- */}
-        {/* MAIN TEXT                                                       */}
-        {/* -------------------------------------------------------------- */}
+        {/* MAIN TEXT */}
 
         <div
           className="absolute flex flex-col items-start"
@@ -407,9 +330,7 @@ export function ContactBanner() {
             gap: '1.875cqw',
           }}
         >
-          {/* ------------------------------------------------------------ */}
-          {/* FIRST ROW                                                     */}
-          {/* ------------------------------------------------------------ */}
+          {/* FIRST ROW */}
 
           <motion.div
             variants={wordContainerVariants}
@@ -442,9 +363,7 @@ export function ContactBanner() {
             </span>
           </motion.div>
 
-          {/* ------------------------------------------------------------ */}
-          {/* SECOND + THIRD ROWS                                           */}
-          {/* ------------------------------------------------------------ */}
+          {/* SECOND + THIRD ROWS */}
 
           <motion.p
             variants={wordContainerVariants}
@@ -469,9 +388,7 @@ export function ContactBanner() {
           </motion.p>
         </div>
 
-        {/* -------------------------------------------------------------- */}
-        {/* SOCIAL LINKS                                                    */}
-        {/* -------------------------------------------------------------- */}
+        {/* SOCIAL LINKS */}
 
         <ChipList
           variants={chipVariants}
@@ -481,9 +398,7 @@ export function ContactBanner() {
           }}
         />
 
-        {/* -------------------------------------------------------------- */}
-        {/* CTAs                                                            */}
-        {/* -------------------------------------------------------------- */}
+        {/* CTAS */}
 
         <motion.div
           variants={simpleTextVariants}
@@ -499,6 +414,7 @@ export function ContactBanner() {
           >
             Send a mail
           </a>
+
           <Link
             to="/contact#cal-embed"
             className="rounded-[100px] bg-black px-6 py-4 text-[15px] font-semibold leading-none text-white transition-colors duration-hover hover:bg-[#1a1a1a]"
@@ -509,67 +425,102 @@ export function ContactBanner() {
       </motion.div>
 
       {/* ================================================================== */}
-      {/* MOBILE / TABLET                                                    */}
+      {/* MOBILE / TABLET                                                     */}
       {/* ================================================================== */}
 
-      {/*
-       * Fixed-height 275px container matching Figma's Contact section exactly.
-       * overflow-hidden clips the phone cord so only the handset is visible.
-       * Contact.tsx adds pt-10 so this div starts at page y=80 (navbar bottom).
-       */}
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        className="relative h-[275px] w-full overflow-hidden lg:hidden"
+        viewport={{
+          once: true,
+          amount: 0.3,
+        }}
+        className="relative min-h-[275px] w-full overflow-hidden lg:hidden"
       >
-        {/* Phone: top=-93px = Figma calc(50%-122px) -translate-y-1/2 in 275px frame */}
-        <motion.img
-          variants={phoneVariants(-6)}
-          src={phoneImg}
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute z-10 h-[217px] w-auto"
-          style={{
-            left: '28.75%',
-            top: '-93px',
-            transformOrigin: '50% 18%',
-            willChange: 'transform, opacity',
-          }}
-        />
+        {/* EMAIL */}
 
-        {/* Email: Figma left-[252px] top-[18px] → right-aligned is more responsive */}
         <motion.p
           variants={simpleTextVariants}
-          className="absolute right-5 top-[18px] whitespace-nowrap text-[12px] leading-[1.6] text-[#121212]"
+          className="absolute right-3 top-[18px] whitespace-nowrap text-[12px] leading-[1.6] text-[#121212] sm:right-5"
         >
           hello@pixelpandas.in
         </motion.p>
 
-        {/* Content block: Figma left-[20px] top-[83px] */}
-        <div className="absolute left-5 right-5 top-[83px] flex flex-col gap-[17px]">
+        {/* CONTENT BLOCK */}
+
+        <div className="absolute left-3 right-3 top-[83px] flex flex-col gap-[17px] sm:left-5 sm:right-5">
           <motion.div
             variants={wordContainerVariants}
             className="flex flex-col gap-3 font-semibold text-[#3a3a3a]"
           >
-            <div className="flex items-center gap-[40px] text-[20px] leading-none">
+            {/* FIRST ROW */}
+
+            <div
+              ref={rowRef}
+              className="relative flex items-center text-[clamp(16px,5.3vw,20px)] leading-none"
+            >
               <span className="whitespace-nowrap">
                 <AnimatedWord>We&rsquo;re</AnimatedWord>{' '}
-                <AnimatedWord>the</AnimatedWord>
+
+                <span
+                  ref={theRef}
+                  className="inline-block"
+                >
+                  <AnimatedWord>the</AnimatedWord>
+                </span>
               </span>
-              <span className="whitespace-nowrap">
+
+              <span
+                ref={teamRef}
+                className="ml-[clamp(32px,10vw,44px)] whitespace-nowrap"
+              >
                 <AnimatedWord>team</AnimatedWord>{' '}
                 <AnimatedWord>you</AnimatedWord>{' '}
                 <AnimatedWord>contact</AnimatedWord>
               </span>
+
+              {/* DYNAMICALLY POSITIONED PHONE */}
+
+              {phoneLeft !== null && (
+                <div
+                  className="pointer-events-none absolute z-10"
+                  style={{
+                    left: phoneLeft - 12,
+                    top: '-176px',
+                    transform: 'translateX(-50%)',
+                  }}
+                >
+                  <motion.img
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{
+                      once: true,
+                      amount: 0.1,
+                    }}
+                    variants={phoneVariants(-6)}
+                    src={phoneImg}
+                    alt=""
+                    aria-hidden="true"
+                    className="h-[clamp(175px,58vw,217px)] w-auto"
+                    style={{
+                      transformOrigin: '50% 18%',
+                      willChange: 'transform, opacity',
+                    }}
+                  />
+                </div>
+              )}
             </div>
-            <div className="text-[20px]">
+
+            {/* SECOND + THIRD ROWS */}
+
+            <div className="text-[clamp(16px,5.3vw,20px)]">
               <p className="leading-[1.5]">
                 <AnimatedWord>When</AnimatedWord>{' '}
                 <AnimatedWord>your</AnimatedWord>{' '}
                 <AnimatedWord>product</AnimatedWord>{' '}
                 <AnimatedWord>needs</AnimatedWord>
               </p>
+
               <p className="leading-[1.5]">
                 <AnimatedWord>More</AnimatedWord>{' '}
                 <AnimatedWord>than</AnimatedWord>{' '}
@@ -580,32 +531,50 @@ export function ContactBanner() {
             </div>
           </motion.div>
 
-          <motion.div variants={simpleTextVariants} className="flex items-center gap-3">
+          {/* CTAS */}
+
+          <motion.div
+            variants={simpleTextVariants}
+            className="flex flex-wrap items-center gap-3"
+          >
             <a
               href="mailto:hello@pixelpandas.in"
-              className="rounded-full border border-[#e5e5e5] bg-[#f5f5f5] px-[12px] py-[8px] text-[10px] font-semibold leading-none text-[#121212] transition-colors duration-hover hover:bg-[#ebebeb]"
+              className="rounded-full border border-[#e5e5e5] bg-[#f5f5f5] px-3 py-2 text-[10px] font-semibold leading-none text-[#121212] transition-colors duration-hover hover:bg-[#ebebeb]"
             >
               Send a mail
             </a>
+
             <Link
               to="/contact#cal-embed"
-              className="rounded-full bg-black px-[12px] py-[8px] text-[10px] font-semibold leading-none text-white transition-colors duration-hover hover:bg-[#1a1a1a]"
+              className="rounded-full bg-black px-3 py-2 text-[10px] font-semibold leading-none text-white transition-colors duration-hover hover:bg-[#1a1a1a]"
             >
               Book a call
             </Link>
           </motion.div>
 
-          <motion.div variants={chipVariants} className="flex items-center gap-3">
+          {/* SOCIAL LINKS */}
+
+          <motion.div
+            variants={chipVariants}
+            className="flex flex-wrap items-center gap-x-3 gap-y-2"
+          >
             {chips.map((chip) => (
               <a
                 key={chip.label}
                 href={chip.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-[2px] whitespace-nowrap transition-opacity duration-hover hover:opacity-70"
+                className="flex items-center gap-[3px] whitespace-nowrap transition-opacity duration-hover hover:opacity-70"
               >
-                <img src={chip.icon} alt="" className="size-[6.55px]" />
-                <span className="text-[12px] leading-[1.6] text-[#7a7a7a]">{chip.label}</span>
+                <img
+                  src={chip.icon}
+                  alt=""
+                  className="size-[10px]"
+                />
+
+                <span className="text-[11px] leading-[1.6] text-[#7a7a7a]">
+                  {chip.label}
+                </span>
               </a>
             ))}
           </motion.div>
@@ -614,4 +583,3 @@ export function ContactBanner() {
     </section>
   );
 }
-
