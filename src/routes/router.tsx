@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ReactNode } from 'react';
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
 import { PageShell } from '@/components/layout/PageShell';
 
 const Home = lazy(() => import('@/pages/Home'));
@@ -14,7 +14,7 @@ function withSuspense(element: ReactNode) {
   return <Suspense fallback={<div className="min-h-screen flex-1" />}>{element}</Suspense>;
 }
 
-export const router = createBrowserRouter([
+const routes: RouteObject[] = [
   {
     element: <PageShell />,
     children: [
@@ -33,4 +33,18 @@ export const router = createBrowserRouter([
       { path: '*', element: withSuspense(<NotFound />) },
     ],
   },
-]);
+];
+
+// Experimental "Break the Rules" kinetic-typography prototype. Dev builds only,
+// mounted as a top-level route (outside PageShell) so it renders full-screen
+// without the shared navbar/footer. Never registered in production — the
+// homepage, navigation, and booking page are untouched.
+if (import.meta.env.DEV) {
+  const BreakTheRulesPrototype = lazy(() => import('@/pages/dev/BreakTheRulesPrototype'));
+  routes.push({ path: '/dev/break-the-rules', element: withSuspense(<BreakTheRulesPrototype />) });
+
+  const EscapePrototype = lazy(() => import('@/pages/dev/EscapePrototype'));
+  routes.push({ path: '/dev/escape', element: withSuspense(<EscapePrototype />) });
+}
+
+export const router = createBrowserRouter(routes);
