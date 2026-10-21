@@ -162,7 +162,7 @@ export function ProjectCard({
         <motion.span
           animate={
             isHovered
-              ? { rotate: -45, backgroundColor: project.brandColor }
+              ? { rotate: 45, backgroundColor: project.brandColor }
               : { rotate: 0, backgroundColor: '#f5f5f5' }
           }
           transition={{ duration: 0.25, ease: 'easeOut' }}
