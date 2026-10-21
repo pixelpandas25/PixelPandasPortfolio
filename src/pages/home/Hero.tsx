@@ -1,9 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import heroEscKey from '@/assets/images/hero-esc-key.webp';
 import shadowArc from '@/assets/icons/hero-shadow-arc.svg';
 import walkingFigure from '@/assets/icons/hero-walking-figure.svg';
+import { EscapeTransition } from '@/components/experimental/EscapeTransition';
 
 function HeroImage({ className }: { className?: string }) {
   return (
@@ -29,24 +31,46 @@ function HeroImage({ className }: { className?: string }) {
 
 export function Hero() {
   const navigate = useNavigate();
+  const [escaping, setEscaping] = useState(false);
 
-  // Pressing Escape on the "Escape" hero jumps to the Cal booking embed on the contact page.
+  // Pressing Escape on the "Escape" hero plays the full transition, which then
+  // hands off to the Cal booking embed on the contact page.
   useEffect(() => {
+    if (escaping) return; // the overlay owns Escape once it's playing
+
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        navigate('/contact#cal-embed');
+      if (event.key !== 'Escape') return;
+
+      const el = document.activeElement as HTMLElement | null;
+      const tag = el?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el?.isContentEditable) {
+        return;
       }
+
+      event.preventDefault();
+      setEscaping(true);
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [navigate]);
+  }, [escaping]);
 
   return (
     <section
       data-nav-tone="light"
       className="relative overflow-hidden bg-paper pt-28 sm:pt-32 lg:min-h-[100dvh] lg:pt-0"
     >
+      {escaping &&
+        createPortal(
+          <div className="fixed inset-0 z-[9999]">
+            <EscapeTransition
+              autoPlay
+              showControls={false}
+              onComplete={() => navigate('/contact#cal-embed')}
+            />
+          </div>,
+          document.body,
+        )}
       {/* Desktop: Figma 1440x760 composition, vertically centered in the viewport */}
       <div className="relative mx-auto hidden min-h-[100dvh] max-w-site items-center lg:flex">
         <div className="relative w-full" style={{ aspectRatio: '1440 / 760', containerType: 'inline-size' }}>
