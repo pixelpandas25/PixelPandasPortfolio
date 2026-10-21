@@ -5,6 +5,7 @@ import heroEscKey from '@/assets/images/hero-esc-key.webp';
 import shadowArc from '@/assets/icons/hero-shadow-arc.svg';
 import walkingFigure from '@/assets/icons/hero-walking-figure.svg';
 import screenBroken from '@/assets/images/screenbroken.png';
+import screenBurn from '@/assets/images/screenburn.mp4';
 
 /* -------------------------------------------------------------------------- */
 /* ESCAPE THE ORDINARY — isolated prototype                                    */
@@ -31,8 +32,9 @@ function sf(map: StageMap): Variants {
   return out as Variants;
 }
 
-// Broken image appears ~300ms after the key press and is held static for 5s.
-const HOLD_MS = 5000;
+// Broken-screen clip plays ~300ms after the key press and runs for ~6s
+// (screenburn.mov is ~6.8s) before the clean reveal.
+const HOLD_MS = 6000;
 const TIMELINE: [Stage, number][] = [
   ['press', 0],
   ['crack', 300],
@@ -64,6 +66,7 @@ export function EscapeTransition({
   const [runId, setRunId] = useState(0);
   const timers = useRef<number[]>([]);
   const started = useRef(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const clearTimers = useCallback(() => {
     timers.current.forEach((id) => window.clearTimeout(id));
@@ -128,6 +131,21 @@ export function EscapeTransition({
   }, [stage, play, autoPlay, onComplete, finish]);
 
   useEffect(() => clearTimers, [clearTimers]);
+
+  // Play the broken-screen clip from the top exactly when the break begins.
+  useEffect(() => {
+    if (reduced) return;
+    const v = videoRef.current;
+    if (!v) return;
+    if (stage === 'crack') {
+      try {
+        v.currentTime = 0;
+      } catch {
+        /* ignore */
+      }
+      void v.play().catch(() => {});
+    }
+  }, [stage, reduced, runId]);
 
   /* ----------------------------- variants ------------------------------- */
 
@@ -260,9 +278,22 @@ export function EscapeTransition({
           </div>
         </motion.div>
 
-        {/* ----- BROKEN SCREEN (static image, held ~5s) ----- */}
+        {/* ----- BROKEN SCREEN (inline clip, plays naturally) ----- */}
         <motion.div className="pointer-events-none absolute inset-0 bg-black" initial="idle" animate={stage} variants={brokenVar}>
-          <img src={screenBroken} alt="" aria-hidden className="h-full w-full object-cover" />
+          {reduced ? (
+            <img src={screenBroken} alt="" aria-hidden className="h-full w-full object-cover" />
+          ) : (
+            <video
+              ref={videoRef}
+              src={screenBurn}
+              poster={screenBroken}
+              muted
+              playsInline
+              preload="auto"
+              aria-hidden
+              className="h-full w-full object-cover"
+            />
+          )}
         </motion.div>
 
         {/* ----- PEAK: CLEAN MESSAGE ----- */}
