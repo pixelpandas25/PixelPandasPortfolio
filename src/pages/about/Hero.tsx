@@ -1,7 +1,23 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import enterKey from '@/assets/images/about-enter-key.webp';
 
 export function Hero() {
+  const navigate = useNavigate();
+
+  // Pressing Escape on the About hero jumps to the Cal booking embed on the contact page.
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        navigate('/contact#cal-embed');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [navigate]);
+
   return (
     <section
       data-nav-tone="light"
@@ -19,7 +35,7 @@ export function Hero() {
           the Drama.
         </h1>
         <p className="max-w-[752px] text-[14px] text-[#8a8a93] sm:text-[20px] sm:leading-[1.5]">
-          PixelPandas is a design studio for people mid-build — figuring it out, scaling up, or just trying to
+          PixelPandas is a design studio for people mid-build figuring it out, scaling up, or just trying to
           move faster. You hand us the headache; you keep the credit.
         </p>
         <div className="flex items-center gap-3 text-[14px] font-medium text-[#8a8a93] sm:gap-5 sm:text-body-lg">

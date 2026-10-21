@@ -37,7 +37,7 @@ export function ProjectInfo({ detail }: ProjectInfoProps) {
                 <p className="text-[22px] font-medium leading-none text-[#000000] sm:text-[32px]">
                   The Collaboration
                 </p>
-                <p className="text-[20px] font-normal leading-[1.5] text-[#3a3a3a]">
+                <p className="whitespace-pre-line text-[20px] font-normal leading-[1.5] text-[#3a3a3a]">
                   {detail.collaboration}
                 </p>
               </motion.div>

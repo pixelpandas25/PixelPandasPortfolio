@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import heroEscKey from '@/assets/images/hero-esc-key.webp';
 import shadowArc from '@/assets/icons/hero-shadow-arc.svg';
 import walkingFigure from '@/assets/icons/hero-walking-figure.svg';
@@ -26,6 +28,20 @@ function HeroImage({ className }: { className?: string }) {
 }
 
 export function Hero() {
+  const navigate = useNavigate();
+
+  // Pressing Escape on the "Escape" hero jumps to the Cal booking embed on the contact page.
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        navigate('/contact#cal-embed');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [navigate]);
+
   return (
     <section
       data-nav-tone="light"

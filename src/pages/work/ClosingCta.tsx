@@ -126,7 +126,7 @@ export function ClosingCta() {
             <motion.a
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              href="mailto:hello@pixelpandas.in"
+              href="tel:+917389994443"
               className="inline-flex items-center justify-center rounded-full border border-[#e5e5e5] bg-[#f5f5f5] px-[16px] py-[12px] text-[12px] font-semibold leading-none text-[#121212] transition-colors duration-hover hover:bg-[#ebebeb] sm:rounded-pill sm:px-9 sm:py-6 sm:text-[22.5px]"
             >
               Talk to founder
